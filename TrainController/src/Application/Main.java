@@ -292,7 +292,17 @@ public class Main extends Application {
 		GridPane speedGrid = new GridPane();
 
 		Button incSpeed = new Button("+");
-		speedGrid.add
+		speedGrid.add(incSpeed, 0, 0);
+
+		Text speed = new Text("XX mph");
+		speed.setTextAlignment(TextAlignment.CENTER);
+		speedGrid.add(speed, 0, 1);
+
+		Button decSpeed = new Button("-");
+		speedGrid.add(decSpeed, 0, 2);
+		speedGrid.setMinWidth(colWidth*3);
+		speedGrid.setAlignment(Pos.CENTER_RIGHT);
+		grid.add(speedGrid, 5, 6, 3, 1);
 
 
 		//Row Index 7
