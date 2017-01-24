@@ -1,4 +1,4 @@
-package drailed;
+package sample;
 
 public class MBOController {
 
