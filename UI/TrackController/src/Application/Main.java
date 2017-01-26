@@ -22,6 +22,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
@@ -286,6 +287,7 @@ public class Main extends Application {
         TextField setOpenText = new TextField("");
         TextField setSwitchText = new TextField("");
         Button sendEngineer = new Button("Send Changes");
+        Button loadPLC = new Button("Upload PLC File");
 
 
         //setBlocklabel
@@ -332,6 +334,9 @@ public class Main extends Application {
 
         //Send Button
         engInputs.add(sendEngineer,0,6,2,1);
+
+        //PLC button
+        engInputs.add(loadPLC,0,7,2,1);
 
         //End Eng Inputs---------------------------------------------------------------------
 
