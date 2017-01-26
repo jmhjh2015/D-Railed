@@ -32,7 +32,7 @@ public class Main extends Application {
 	private Scene mainScene, murphyScene, userInScene, engScene, toTMScene;
 	private Label blockLabel, controlLabel, switchLabel, blockIDLabel, openLabel, lightsLabel, crossLabel, stationLabel, heaterLabel, switchAdjLabel, switchIDLAbel, mainBlockLabel, subBlock1Label,subBlock2Label,connectedLabel;
 	private TextField blockID, openStatus, lightsStatus,crossStatus,stationStatus,heaterStatus, switchAdj1, switchAdj2, switchIDText, mainBlockText, subBlock1Text, subBlock2Text, connectedText, notifications;
-    private Button murphyButton, userInputsButton, engInputsButton, toTrackModelButton, murphyBreakTrackButton;
+    private Button murphyButton, userInputsButton, engInputsButton, toTrackModelButton, murphyBreakTrackButton, murphyBreakCTCComms, murphyBreakTMComms;
 
 
 	@Override
@@ -241,15 +241,159 @@ public class Main extends Application {
 
         main.add(switchInfo,2,1,1,2);
 
-        //Initialize Murphy Pane
+        //End main pane -----------------------------------------------------------------------
 
 
-        //Initialize Murphy Buttons
+        //Initialize Murphy stuff
         murphyBreakTrackButton = new Button("Break Track");
+        murphyBreakCTCComms = new Button("CTC");
+        murphyBreakTMComms = new Button("Track Model");
+        TextField breakBlockID = new TextField("Put Block ID to break");
+        Label breakCommsLabel = new Label("Break Comms with: ");
+        GridPane breakComms = new GridPane();
+        murphy.setVgap(20);
+        breakComms.setHgap(10);
 
-        //Set up items on murphy GridPane
+        //break track text field
+        murphy.add(breakBlockID,0,0);
+
+        //break track button
         murphyBreakTrackButton.setOnAction(e -> MurphyButtonClicked(e));
-        murphy.add(murphyBreakTrackButton, 0, 0);
+        murphy.add(murphyBreakTrackButton, 1, 0);
+
+        //Break comms label
+        murphy.add(breakCommsLabel,0,1);
+
+        //Break comms girdpane
+        breakComms.add(murphyBreakCTCComms,0,0);
+        breakComms.add(murphyBreakTMComms,0,1);
+
+        murphy.add(breakComms,1,1);
+
+        //End murphy --------------------------------------------------------------------
+
+        //Engineer Inputs
+        Label setBlocklabel = new Label("Set Block ID: ");
+        Label setLightsLabel = new Label("Set Lights: ");
+        Label setCrossroadsLabel = new Label("Set Crossing Signal: ");
+        Label setHeaterLabel = new Label("Set Heater: ");
+        Label setOpenLabel = new Label("Set Open Status: ");
+        Label setSwitchLabel = new Label("Toggle Switch: ");
+        TextField setBlockID = new TextField("");
+        TextField setLightsText = new TextField("");
+        TextField setCrossroadsText = new TextField("");
+        TextField setHeaterText = new TextField("");
+        TextField setOpenText = new TextField("");
+        TextField setSwitchText = new TextField("");
+        Button sendEngineer = new Button("Send Changes");
+
+
+        //setBlocklabel
+        setBlocklabel.setFont(new Font("Garamond",16));
+        engInputs.add(setBlocklabel, 0,0);
+
+        //SsetBlockID
+        engInputs.add(setBlockID, 1,0);
+
+        //setLightsLabel
+        setLightsLabel.setFont(new Font("Garamond",16));
+        engInputs.add(setLightsLabel, 0,1);
+
+        //setLightsText
+        engInputs.add(setLightsText, 1,1);
+
+        //setCrossroadsLabel
+        setCrossroadsLabel.setFont(new Font("Garamond",16));
+        engInputs.add(setCrossroadsLabel, 0,2);
+
+        //setCrossroadsText
+        engInputs.add(setCrossroadsText, 1,2);
+
+        //setHeaterLabel
+        setHeaterLabel.setFont(new Font("Garamond",16));
+        engInputs.add(setHeaterLabel, 0,3);
+
+        //setHeaterText
+        engInputs.add(setHeaterText, 1,3);
+
+        //setOpenLabel
+        setOpenLabel.setFont(new Font("Garamond",16));
+        engInputs.add(setOpenLabel, 0,4);
+
+        //setOpenText
+        engInputs.add(setOpenText, 1,4);
+
+        //setSwitchLabel
+        setSwitchLabel.setFont(new Font("Garamond",16));
+        engInputs.add(setSwitchLabel, 0,5);
+
+        //setSwitchText
+        engInputs.add(setSwitchText, 1,5);
+
+        //Send Button
+        engInputs.add(sendEngineer,0,6,2,1);
+
+        //End Eng Inputs---------------------------------------------------------------------
+
+        //To Track Model
+        Label sendTrainID = new Label("Set Train ID: ");
+        Label sendSpeed = new Label("Set Speed: ");
+        Label sendAuth = new Label("Set Authority: ");
+        TextField sendTrainIDText = new TextField("");
+        TextField sendSpeedText = new TextField("");
+        TextField sendAuthText = new TextField("");
+        Button sendData = new Button("Send to Track Model");
+        toTrackModel.setVgap(10);
+
+
+        //Assemble
+        sendTrainID.setFont(new Font("Garamond",16));
+        toTrackModel.add(sendTrainID,0,0);
+
+        sendSpeed.setFont(new Font("Garamond",16));
+        toTrackModel.add(sendSpeed,0,1);
+
+        sendAuth.setFont(new Font("Garamond",16));
+        toTrackModel.add(sendAuth,0,2);
+
+        toTrackModel.add(sendTrainIDText,1,0);
+
+        toTrackModel.add(sendSpeedText,1,1);
+
+        toTrackModel.add(sendAuthText,1,2);
+
+        toTrackModel.add(sendData,0,3,2,1);
+
+        //End To Track Model ----------------------------------------------------------------------
+
+        //From CTC
+        Label getTrainID = new Label("Set Train ID: ");
+        Label getSpeed = new Label("Set Speed: ");
+        Label getAuth = new Label("Set Authority: ");
+        TextField getTrainIDText = new TextField("");
+        TextField getSpeedText = new TextField("");
+        TextField getAuthText = new TextField("");
+        Button getData = new Button("Simulate");
+        userInputs.setVgap(10);
+
+
+        //Assemble
+        getTrainID.setFont(new Font("Garamond",16));
+        userInputs.add(getTrainID,0,0);
+
+        getSpeed.setFont(new Font("Garamond",16));
+        userInputs.add(getSpeed,0,1);
+
+        getAuth.setFont(new Font("Garamond",16));
+        userInputs.add(getAuth,0,2);
+
+        userInputs.add(getTrainIDText,1,0);
+
+        userInputs.add(getSpeedText,1,1);
+
+        userInputs.add(getAuthText,1,2);
+
+        userInputs.add(getData,0,3,2,1);
 
 
         mainStage.setScene(mainScene);
