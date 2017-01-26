@@ -32,7 +32,6 @@ public class TrackModel
 
     public void loadNewTrack(String fileName){
 
-
         try (BufferedReader br = new BufferedReader(new FileReader(fileName)))
         {
 

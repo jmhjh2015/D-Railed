@@ -58,6 +58,10 @@ public class Block {
     private Block nextBlock;
     private Block previousBlock;
 
+    // To Train: Send Power To Train
+    private Double setPointSpeed;
+    private Double authority;
+
     public Block(String line, String section, Integer blockNumber){
         this.line = line;
         this.section = section;
@@ -95,6 +99,21 @@ public class Block {
         return this.length;
     }
 
+    public Double getSetPointSpeed() {
+        return setPointSpeed;
+    }
+
+    public void setSetPointSpeed(Double setPointSpeed) {
+        this.setPointSpeed = setPointSpeed;
+    }
+
+    public Double getAuthority() {
+        return authority;
+    }
+
+    public void setAuthority(Double authority) {
+        this.authority = authority;
+    }
 }
 
 
