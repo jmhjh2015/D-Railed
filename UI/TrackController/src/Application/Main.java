@@ -92,7 +92,7 @@ public class Main extends Application {
         main.add(controlLabel, 1, 0);
         main.add(switchLabel, 2, 0);
 
-        //Block Info Section
+        //Block Info Section -------------------------------------------
         blockInfo.setVgap(40);
         //Block label
         blockIDLabel = new Label("Block ID: ");
@@ -122,7 +122,7 @@ public class Main extends Application {
         blockInfo.add(lightsStatus, 1,2);
 
         //Crossroads label
-        crossLabel = new Label("Crossroad Light Status: ");
+        crossLabel = new Label("Crossings Status: ");
         crossLabel.setFont(new Font("Garamond",16));
         blockInfo.add(crossLabel,0,3);
 
@@ -164,7 +164,7 @@ public class Main extends Application {
 
         main.add(blockInfo,0,1,1,2);
 
-        //Set up ButtonPane
+        //Set up ButtonPane -----------------------------------------------------------------------
         murphyButton = new Button("Murphy Controls");
         userInputsButton = new Button("CTC Inputs");
         engInputsButton = new Button("Engineer Inputs");
@@ -191,7 +191,7 @@ public class Main extends Application {
         notifications.setMinHeight(windowHeight/3);
         main.add(notifications,1,2);
 
-        //Set up switch info
+        //Set up switch info ------------------------------------------------------------------
         switchInfo.setVgap(45);
 
         //Switch ID label
