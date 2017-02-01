@@ -3,27 +3,38 @@ package Application.Track.UI;
 /**
  * Created by andrew on 1/21/17.
  */
+import Application.Track.Model.*;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TrackModelGUI extends Application {
 
     //Class strings
     private String applicationTitle = "Track Model";
+
+    TrackModel track = new TrackModel();
+    Block selectedBlock = null;
+    Label blockInfoLabel;
 
     //Class integers
     private int windowWidth = 950;
@@ -32,10 +43,6 @@ public class TrackModelGUI extends Application {
     private int gridBlock = 50;
     private int rowIndex = 0;
     private int colIndex = 0;
-
-    final String[] lineNames = new String[]{"Green", "Red", "BLUE", "ORANGE", "YELLOW", "INDIGO", "VIOLET", "NAVY", "ROSE", "PURPLE", "BLACK", "WHITE"};
-    final String[] sectionNames = new String[]{"A", "B"};
-    final String[] blockNames = new String[]{"1", "2", "3"};
 
     @Override
     public void start(Stage stage) throws Exception{
@@ -105,31 +112,37 @@ public class TrackModelGUI extends Application {
         layoutMenuTitle.setMaxHeight(20);
         layoutMenuTitle.setAlignment(Pos.CENTER_LEFT);
 
-        // Menu Layout
-        TitledPane[] linePanes = new TitledPane[lineNames.length];
-        TitledPane[] sectionPanes = new TitledPane[sectionNames.length];
-        Button[] blockButtons = new Button[blockNames.length];
-        VBox[] buttonBoxes = new VBox[blockNames.length];
-
         Accordion lineAccordion = new Accordion();
-        Accordion[] sectionAccordions = new Accordion[lineNames.length];
+        List<Accordion> sectionAccordions = new ArrayList<>();
+        List<TitledPane> linePanes = new ArrayList<>();
+        List<TitledPane> sectionPanes = new ArrayList<>();
+        List<Button> blockButtons = new ArrayList<>();
+        List<VBox> buttonBoxes = new ArrayList<>();
 
-        for(int i = 0; i < lineNames.length; i++) {
-            sectionAccordions[i] = new Accordion();
-            for(int j = 0; j < sectionNames.length; j++){
-                buttonBoxes[j] = new VBox(5);
-                for(int k = 0; k < blockNames.length; k++){
-                    blockButtons[k] = new Button("Block: " + blockNames[k]);
-                    blockButtons[k].setMinWidth(windowWidth);
-                    blockButtons[k].setAlignment(Pos.CENTER_LEFT);
-                    blockButtons[k].setTextAlignment(TextAlignment.LEFT);
+        for(Line line : track.getLines()){
+            Accordion sectionAccordion = new Accordion();
+            for(Section section : line.getSections()){
+                VBox buttonBox = new VBox(5);
+                for(Block block : section.getBlocks()){
+                    Button blockButton = new Button("Block: " + block.getBlockNumber());
+                    blockButton.setMinWidth(windowWidth);
+                    blockButton.setAlignment(Pos.CENTER_LEFT);
+                    blockButton.setTextAlignment(TextAlignment.LEFT);
+                    blockButton.setOnAction((event) -> {
+                        selectedBlock = section.getBlock(block.getBlockNumber());
+                        blockInfoLabel = new Label("Block Info: Line: " + selectedBlock.getLine() + " | Section: " + selectedBlock.getSection() + " | Block: " + selectedBlock.getBlockNumber());
+                        //blockInfo.add(blockInfoLabel, 0, 0);
+                        //blockMonitor.add(blockInfo, 0, 0);
+                    });
+                    blockButtons.add(blockButton);
+                    buttonBox.getChildren().add(blockButton);
                 }
-                buttonBoxes[j].getChildren().addAll(blockButtons);
-                buttonBoxes[j].setPadding(new Insets(0));
-                sectionPanes[j] = new TitledPane("Section: " + sectionNames[j], buttonBoxes[j]);
+                buttonBox.setPadding(new Insets(0));
+                TitledPane sectionPane = new TitledPane("Section: " + section.getSection(), buttonBox);
+                sectionAccordion.getPanes().add(sectionPane);
             }
-            sectionAccordions[i].getPanes().addAll(sectionPanes);
-            linePanes[i] = new TitledPane("Line: " + lineNames[i], sectionAccordions[i]);
+            TitledPane linePane = new TitledPane("Line: " + line.getLine(), sectionAccordion);
+            linePanes.add(linePane);
         }
 
         // Accordion Settings
@@ -148,10 +161,85 @@ public class TrackModelGUI extends Application {
         // Button Menu                    //
         ////////////////////////////////////
 
+        FileChooser fileChooser = new FileChooser();
+        Stage fileSelect = new Stage();
+        fileSelect.setTitle("Choose a track layout data file to import:");
+        fileChooser.setInitialDirectory(new File("C:\\Users\\adzun_000\\IdeaProjects\\D-Railed\\src\\Application\\Track\\UI\\resources"));
+
         // Import Track Button
         Button importTrack = new Button("Import Track");
         importTrack.setMinHeight(30);
         importTrack.setMaxHeight(30);
+
+        // import a track and modify the track layout
+        importTrack.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent e){
+                File file = fileChooser.showOpenDialog(fileSelect);
+                if(file != null){
+                    track.importTrack(file.getAbsolutePath());
+
+                    Accordion lineAccordion = new Accordion();
+                    List<Accordion> sectionAccordions = new ArrayList<>();
+                    List<TitledPane> linePanes = new ArrayList<>();
+                    List<TitledPane> sectionPanes = new ArrayList<>();
+                    List<Button> blockButtons = new ArrayList<>();
+                    List<VBox> buttonBoxes = new ArrayList<>();
+
+                    for(Line line : track.getLines()){
+
+                        for(Switch s : line.getSwitches()){
+                            System.out.println("Switch: " + s.getSwitchInfo());
+                        }
+
+                        for(Station s : line.getStations()){
+                            System.out.println("Station: " + s.getStationName());
+                        }
+
+                        for(Crossing c : line.getCrossings()){
+                            System.out.println("Crossing: " + c.getCrossingNumber());
+                        }
+
+                        Accordion sectionAccordion = new Accordion();
+                        for(Section section : line.getSections()){
+                            VBox buttonBox = new VBox(5);
+                            for(Block block : section.getBlocks()){
+                                Button blockButton = new Button("Block: " + block.getBlockNumber());
+                                blockButton.setMinWidth(windowWidth);
+                                blockButton.setAlignment(Pos.CENTER_LEFT);
+                                blockButton.setTextAlignment(TextAlignment.LEFT);
+                                blockButton.setOnAction((event) -> {
+                                    selectedBlock = section.getBlock(block.getBlockNumber());
+                                    blockInfoLabel = new Label("Block Info: Line: " + selectedBlock.getLine() + " | Section: " + selectedBlock.getSection() + " | Block: " + selectedBlock.getBlockNumber());
+                                    //blockInfo.add(blockInfoLabel, 0, 0);
+                                    //blockMonitor.add(blockInfo, 0, 0);
+
+                                });
+                                blockButtons.add(blockButton);
+                                buttonBox.getChildren().add(blockButton);
+                            }
+                            buttonBox.setPadding(new Insets(0));
+                            TitledPane sectionPane = new TitledPane("Section: " + section.getSection(), buttonBox);
+                            sectionAccordion.getPanes().add(sectionPane);
+                        }
+                        TitledPane linePane = new TitledPane("Line: " + line.getLine(), sectionAccordion);
+                        linePanes.add(linePane);
+                    }
+
+                    // Accordion Settings
+                    lineAccordion.getPanes().addAll(linePanes);
+                    lineAccordion.setMinWidth(windowWidth);
+                    ScrollPane scrollPane = new ScrollPane();
+                    scrollPane.setContent(lineAccordion);
+                    scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+                    scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+
+                    //trackLayout.getChildren().clear();
+                    trackLayout.add(scrollPane, 0, 0);
+
+                }
+
+            }
+        });
 
         Button infraOver = new Button("Infrastructure Override");
         infraOver.setMinHeight(30);
@@ -170,17 +258,20 @@ public class TrackModelGUI extends Application {
         /////////////////////////////////////
 
         // block info label
-        Label blockInfoLabel = new Label("Block Info: Line: Green | Section: A | Block: 3");
+        blockInfoLabel = new Label("Block Info: Line: None | Section: None | Block: None");
         blockInfoLabel.setTextAlignment(TextAlignment.LEFT);
         blockInfo.add(blockInfoLabel, 0, 0);
 
         // block info table
-        TableView blockInfoMetrics = new TableView();
+        TableView<Metric> blockInfoMetrics = new TableView();
+        blockInfoMetrics.setEditable(true);
 
-        TableColumn metric = new TableColumn("Metric");
-        //metric.setCellValueFactory(new PropertyValueFactory<String, String>("metric"));
-        TableColumn value = new TableColumn("Value");
-        //value.setCellValueFactory(new PropertyValueFactory<String, String>("value"));
+        TableColumn<Metric, String> metric = new TableColumn("Metric");
+        //metric.setCellValueFactory(new PropertyValueFactory<Metric, String>("metric"));
+        metric.setMinWidth(60);
+
+        TableColumn<Metric, String> value = new TableColumn("Value");
+        //value.setCellValueFactory(new PropertyValueFactory<Metric, String>("value"));
         value.setMinWidth(250);
 
         ObservableList<Metric> data = FXCollections.observableArrayList(
@@ -507,7 +598,6 @@ public class TrackModelGUI extends Application {
         stage.setScene(scene);
         stage.show();
     }
-
 
     public static void main(String[] args) {
         launch(args);

@@ -30,15 +30,23 @@ public class TrackModel
         this.lines = lines;
     }
 
-    public void loadNewTrack(String fileName){
+    public void importTrack(String fileName){
 
         try (BufferedReader br = new BufferedReader(new FileReader(fileName)))
         {
 
+            String reader = null;
             String [] dataLine = null;
 
-            while((dataLine = Arrays.stream(br.readLine().split(",")).map(String::trim).toArray(String[]::new)) != null)
+            while((reader = br.readLine()) != null)
             {
+
+                dataLine = Arrays.stream(reader.split(",")).map(String::trim).toArray(String[]::new);
+
+                // ignore column header lines
+                if(dataLine[0].equals("Line") && dataLine[1].equals("Section")){
+                    continue;
+                }
 
                 Line updateLine = null;
                 Section updateSection = null;
@@ -53,8 +61,15 @@ public class TrackModel
                 String infrastructure = dataLine[6].toUpperCase();
                 Double blockElevation = new Double(dataLine[7]);
                 Double blockCumulativeElevation = new Double(dataLine[8]);
-                String switchInfo = dataLine[9].toUpperCase();
-                String direction = dataLine[10].toUpperCase();
+                String switchInfo = null;
+                String direction = null;
+
+                if(dataLine.length > 9) {
+                    switchInfo = dataLine[9].toUpperCase();
+                    if(dataLine.length > 10) {
+                        direction = dataLine[10].toUpperCase();
+                    }
+                }
 
                 Double temperature = generateTemperature();
 
@@ -78,12 +93,13 @@ public class TrackModel
                 // check if the section exists in the line if it doesn't exist add the section to the lines list of sections
                 if(!updateLine.existsSection(section))
                 {
-                    updateLine.addSection(new Section(line, section));
+                    updateSection = new Section(line, section);
 
                 }
                 else
                 {
                     updateSection = updateLine.getSection(section);
+
                 }
 
                 // check if the block exists in the section if it doesn't exist add the block to the sections list of blocks
@@ -109,19 +125,36 @@ public class TrackModel
 
                     updateBlock.setInfrastructure(updateStation, updateSwitch, updateCrossing, other);
 
-                    updateSection.addBlock(updateBlock);
-
                 }else{
                     // the entry already exists in the track model
+                    updateBlock = updateSection.getBlock(blockNumber);
                 }
+
+                if(!existsLine(line) && !updateLine.existsSection(section) && !updateSection.existsBlock(blockNumber))
+                {
+                    updateSection.addBlock(updateBlock);
+                    updateLine.addSection(updateSection);
+                    lines.add(updateLine);
+
+                }
+                else if(!updateLine.existsSection(section) && !updateSection.existsBlock(blockNumber))
+                {
+                    updateSection.addBlock(updateBlock);
+                    updateLine.addSection(updateSection);
+
+                }
+                else if(!updateSection.existsBlock(blockNumber))
+                {
+                    updateSection.addBlock(updateBlock);
+
+                }
+
 
             }
 
         }catch(IOException ioe){
             System.out.println("ERROR: " + ioe.getMessage());
         }
-
-
     }
 
     ///////////////////////////////
@@ -177,10 +210,10 @@ public class TrackModel
         }
 
         // 4.) A switch that is not apart of the main switch infrastructure needs added
-        if(switchInfo.contains("SWITCH") && !infrastructure.contains("SWITCH"))
+        if(switchInfo != null && switchInfo.contains("SWITCH") && !infrastructure.contains("SWITCH"))
         {
 
-            Switch updateSwitch = parseSubSwitch(updateLine, switchInfo.split(" ")[0]);
+            Switch updateSwitch = parseSubSwitch(updateLine, switchInfo.split(" ")[1]);
             updateSwitch.addConnector(blockNumber);
             infraSet.add(updateSwitch);
 
@@ -193,20 +226,20 @@ public class TrackModel
         return infraSet;
     }
 
-    private Switch parseSubSwitch(Line updateLine, String s) {
+    private Switch parseSubSwitch(Line updateLine, String aSwitch) {
 
         Switch updateSwitch = null;
 
         // If the switch exists already add it to the infrastructure of the main or sub switch
-        if(updateLine.existsSwitch(new Integer(s)))
+        if(updateLine.existsSwitch(new Integer(aSwitch)))
         {
-            updateSwitch = updateLine.getSwitch(new Integer(s));
+            updateSwitch = updateLine.getSwitch(new Integer(aSwitch));
 
         // If the switch doesn't exist yet and this switch is a sub switch of the system
         }
         else
         {
-            updateSwitch = new Switch(new Integer(s));
+            updateSwitch = new Switch(new Integer(aSwitch));
         }
 
         return updateSwitch;
@@ -219,12 +252,12 @@ public class TrackModel
         // If a switch of the same switch number exists already this switch is added as the main of the switch
         if(updateLine.existsSwitch(new Integer(switchInfo.split(" ")[1].trim())))
         {
-            updateSwitch = updateLine.getSwitch(new Integer(switchInfo.split(" ")[0]));
+            updateSwitch = updateLine.getSwitch(new Integer(switchInfo.split(" ")[1]));
 
         } // If a switch doesn't exit create a new switch and set this block as the main block of the switch
         else
         {
-            updateSwitch = new Switch(new Integer(switchInfo.split(" ")[0]), blockNumber);
+            updateSwitch = new Switch(new Integer(switchInfo.split(" ")[1]), blockNumber);
 
         }
 
@@ -294,4 +327,11 @@ public class TrackModel
         return null;
     }
 
+    public int getLineCount() {
+        return lineCount;
+    }
+
+    public void setLineCount(int lineCount) {
+        this.lineCount = lineCount;
+    }
 }

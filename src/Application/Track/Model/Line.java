@@ -14,7 +14,6 @@ public class Line {
     private int switchCount;
     private int stationCount;
     private int crossingCount;
-    private int heaterCount;
     private int totalLength;
 
     // line component lists
@@ -22,7 +21,6 @@ public class Line {
     private List<Switch> switches;
     private List<Station> stations;
     private List<Crossing> crossings;
-    private List<Heater> heaters;
 
     ////////////////////////
     // Application.Track.Model.Line Level         //
@@ -31,6 +29,9 @@ public class Line {
     public Line(String line){
         this.line = line;
         sections = new ArrayList<>();
+        switches = new ArrayList<>();
+        stations = new ArrayList<>();
+        crossings = new ArrayList<>();
     }
 
     public String getLine() {
@@ -69,10 +70,12 @@ public class Line {
     }
 
     public void addSection(Section section){
+        sectionCount++;
         this.sections.add(section);
     }
 
     public boolean removeSection(Section section){
+        sectionCount--;
         return this.sections.remove(section);
     }
 
@@ -124,6 +127,7 @@ public class Line {
     }
 
     public void addSwitch(Switch aSwitch){
+        switchCount++;
         this.switches.add(aSwitch);
     }
 
@@ -132,9 +136,11 @@ public class Line {
     }
 
     public boolean existsSwitch(Integer switchNumber){
-        for(Switch s : switches) {
-            if(s.getSwitchNumber().equals(switchNumber))
-                return true;
+        if(switchNumber != null && !switches.isEmpty()) {
+            for (Switch s : switches) {
+                if (s.getSwitchNumber().equals(switchNumber))
+                    return true;
+            }
         }
 
         return false;
@@ -170,6 +176,10 @@ public class Line {
 
         return false;
     }
+    public void addStation(Station station) {
+        stationCount++;
+        this.stations.add(station);
+    }
 
     ////////////////////////
     // Application.Track.Model.Crossing Level     //
@@ -192,16 +202,9 @@ public class Line {
         return false;
     }
 
-    ////////////////////////
-    // Application.Track.Model.Heater Level       //
-    ////////////////////////
-
-    public List<Heater> getHeaters() {
-        return heaters;
-    }
-
-    public void setHeaters(ArrayList<Heater> heaters) {
-        this.heaters = heaters;
+    public void addCrossing(Crossing crossing){
+        crossingCount++;
+        this.crossings.add(crossing);
     }
 
 }

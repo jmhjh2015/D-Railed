@@ -45,7 +45,6 @@ public class Block {
     private Switch aSwitch;
     private Station station;
     private Crossing crossing;
-    private Heater heater;
     private String other;
 
     // System State
@@ -66,7 +65,6 @@ public class Block {
         this.line = line;
         this.section = section;
         this.blockNumber = blockNumber;
-        this.heater = new Heater(blockNumber);
     }
 
     public void setParameters(Double length, Double grade, Double speedLimit, Double elevation, Double cumElevation, Double temperature, String direction){
@@ -76,7 +74,6 @@ public class Block {
         this.elevation = elevation;
         this.cumulativeElevation = cumElevation;
         this.temperature = temperature;
-        this.heater.setRailTemp(temperature);
         this.direction = direction;
     }
 
@@ -113,6 +110,22 @@ public class Block {
 
     public void setAuthority(Double authority) {
         this.authority = authority;
+    }
+
+    public String getLine() {
+        return line;
+    }
+
+    public void setLine(String line) {
+        this.line = line;
+    }
+
+    public String getSection() {
+        return section;
+    }
+
+    public void setSection(String section) {
+        this.section = section;
     }
 }
 

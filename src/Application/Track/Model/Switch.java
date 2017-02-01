@@ -14,7 +14,6 @@ public class Switch {
     private boolean toYard;
     private boolean fromYard;
 
-
     /***
      * Create a switch object with a switch number and an empty connection layout.
      *

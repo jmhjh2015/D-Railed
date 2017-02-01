@@ -22,9 +22,9 @@ public class Section {
     private String line;
     private String section;
     private List<Block> blocks;
-    private Block nextSection;
-    private Block previousSection;
-    private int count;
+    private Section nextSection;
+    private Section previousSection;
+    private int blockCount;
     private Double length;
 
 
@@ -33,14 +33,14 @@ public class Section {
      *  Basic constructor of a Application.Track.Model.Section: specifies attributes that the section and related blocks
      *  are owned by.
      *
-     * @param sectionDesignation - the section ID of the track
-     * @param lineDesignation - the line the section belongs to
+     * @param section - the section ID of the track
+     * @param line - the line the section belongs to
      */
-    public Section(String sectionDesignation, String lineDesignation){
-        section = sectionDesignation;
-        line = lineDesignation;
+    public Section(String line, String section){
+        this.section = section;
+        this.line = line;
         blocks = new ArrayList<>();
-        count = 0;
+        blockCount = 0;
         length = 0.0;
     }
 
@@ -101,7 +101,7 @@ public class Section {
      */
     public void setBlocks(List<Block> blocks) {
         this.blocks = blocks;
-        count = blocks.size();
+        blockCount = blocks.size();
     }
 
     /***
@@ -110,7 +110,7 @@ public class Section {
      * @param block - a Application.Track.Model.Block object belonging to this section
      */
     public void addBlock(Block block){
-        count++;
+        blockCount++;
         blocks.add(block);
     }
 
@@ -121,7 +121,7 @@ public class Section {
      * @return a true on success
      */
     public boolean removeBlock(Block block){
-        this.count--;
+        this.blockCount--;
         return blocks.remove(block);
     }
 
@@ -144,5 +144,20 @@ public class Section {
         return false;
     }
 
+    public Block getBlock(Integer block){
+        for(Block b : blocks){
+            if(b.getBlockNumber().equals(block))
+                return b;
+        }
 
+        return null;
+    }
+
+    public int getBlockCount() {
+        return blockCount;
+    }
+
+    public void setBlockCount(int blockCount) {
+        this.blockCount = blockCount;
+    }
 }

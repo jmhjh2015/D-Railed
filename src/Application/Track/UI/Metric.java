@@ -7,35 +7,35 @@ import javafx.beans.property.SimpleStringProperty;
  */
 public class Metric {
 
-    private final SimpleStringProperty metric;
-    private final SimpleStringProperty value;
+    private String metric;
+    private String value;
 
     public Metric(String metric, String value) {
-        this.metric = new SimpleStringProperty(metric);
-        this.value = new SimpleStringProperty(value);
+        this.metric = metric;
+        this.value = value;
     }
 
     public String getMetric() {
-        return metric.get();
+        return metric;
     }
 
     public String metricProperty() {
-        return metric.get();
+        return metric;
     }
 
     public void setMetric(String metric) {
-        this.metric.set(metric);
+        this.metric = metric;
     }
 
     public String getValue() {
-        return value.get();
+        return this.value;
     }
 
-    public SimpleStringProperty valueProperty() {
+    public String valueProperty() {
         return value;
     }
 
     public void setValue(String value) {
-        this.value.set(value);
+        this.value = value;
     }
 }
