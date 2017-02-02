@@ -29,7 +29,7 @@ public class Main extends Application {
 	private TextArea notifications;
 	private Text controllerLine, controllerSection;
     private Button murphyButton, userInputsButton, engInputsButton, toTrackModelButton, murphyBreakTrackButton, murphyBreakCTCComms, murphyBreakTMComms;
-    private RadioButton trainRB, blockRB;
+    private RadioButton trainRB, blockRB, switchRB;
 
 
 	@Override
@@ -98,7 +98,7 @@ public class Main extends Application {
         controllerLine = new Text("Line - Red");
         controllerSection = new Text("Section - A to G");
         blockLabel = new Label("Block Info");
-        controlLabel = new Label("Controls/Train Info");
+        controlLabel = new Label("Controls/Track Info");
         switchLabel = new Label("Switch Info");
         blockLabel.setMinWidth(windowWidth/3-20);
         controlLabel.setMinWidth(windowWidth/3-20);
@@ -213,8 +213,11 @@ public class Main extends Application {
         trainRB.setToggleGroup(tOrB);
         blockRB = new RadioButton("Blocks");
         blockRB.setToggleGroup(tOrB);
+        switchRB = new RadioButton("Switches");
+        switchRB.setToggleGroup(tOrB);
         trainOrBlock.add(trainRB, 0, 0);
         trainOrBlock.add(blockRB, 1, 0);
+        trainOrBlock.add(switchRB, 2, 0);
         trainInfo.add(trainOrBlock,0,1);
         main.add(trainInfo,1,3);
 
@@ -303,13 +306,13 @@ public class Main extends Application {
         Label setBlocklabel = new Label("Select Block ID: ");
         Label setLightsLabel = new Label("Set Lights: ");
         Label setCrossroadsLabel = new Label("Set Crossing Signal: ");
-        Label setHeaterLabel = new Label("Set Heater: ");
+        Label setSwitchLabel = new Label("Select Switch: ");
         Label setOpenLabel = new Label("Set Open Status: ");
-        Label setSwitchLabel = new Label("Toggle Switch: ");
+        Label setSwitchToggleLabel = new Label("Toggle Switch: ");
         TextField setBlockID = new TextField("");
         TextField setLightsText = new TextField("");
         TextField setCrossroadsText = new TextField("");
-        TextField setHeaterText = new TextField("");
+        TextField selectSwitchText = new TextField("");
         TextField setOpenText = new TextField("");
         TextField setSwitchText = new TextField("");
         Button sendEngineer = new Button("Send Changes");
@@ -320,7 +323,7 @@ public class Main extends Application {
         setBlocklabel.setFont(new Font("Garamond",16));
         engInputs.add(setBlocklabel, 0,0);
 
-        //SsetBlockID
+        //setBlockID
         engInputs.add(setBlockID, 1,0);
 
         //setLightsLabel
@@ -337,23 +340,23 @@ public class Main extends Application {
         //setCrossroadsText
         engInputs.add(setCrossroadsText, 1,2);
 
-        //setHeaterLabel
-        setHeaterLabel.setFont(new Font("Garamond",16));
-        engInputs.add(setHeaterLabel, 0,3);
-
-        //setHeaterText
-        engInputs.add(setHeaterText, 1,3);
-
         //setOpenLabel
         setOpenLabel.setFont(new Font("Garamond",16));
-        engInputs.add(setOpenLabel, 0,4);
+        engInputs.add(setOpenLabel, 0,3);
 
         //setOpenText
-        engInputs.add(setOpenText, 1,4);
+        engInputs.add(setOpenText, 1,3);
 
         //setSwitchLabel
         setSwitchLabel.setFont(new Font("Garamond",16));
-        engInputs.add(setSwitchLabel, 0,5);
+        engInputs.add(setSwitchLabel, 0,4);
+
+        //selectSwitchText
+        engInputs.add(selectSwitchText, 1,4);
+
+        //setSwitchToggleLabel
+        setSwitchToggleLabel.setFont(new Font("Garamond",16));
+        engInputs.add(setSwitchToggleLabel, 0,5);
 
         //setSwitchText
         engInputs.add(setSwitchText, 1,5);
