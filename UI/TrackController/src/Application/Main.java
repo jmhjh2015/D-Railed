@@ -5,35 +5,31 @@ package Application;
  */
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Text;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-import javafx.stage.FileChooser;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 
 public class Main extends Application {
 
 	//Class Objects
 	private Stage mainStage, sideStage;
 	private Scene mainScene, murphyScene, userInScene, engScene, toTMScene;
-	private Label blockLabel, controlLabel, switchLabel, blockIDLabel, openLabel, lightsLabel, crossLabel, stationLabel, heaterLabel, switchAdjLabel, switchIDLAbel, mainBlockLabel, subBlock1Label,subBlock2Label,connectedLabel;
-	private TextField blockID, openStatus, lightsStatus,crossStatus,stationStatus,heaterStatus, switchAdj1, switchAdj2, switchIDText, mainBlockText, subBlock1Text, subBlock2Text, connectedText, notifications;
+	private Label controllerLabel,blockLabel, controlLabel, switchLabel, blockIDLabel, openLabel, lightsLabel, crossLabel, stationLabel, switchAdjLabel, switchIDLAbel, mainBlockLabel, subBlock1Label,subBlock2Label,connectedLabel;
+	private TextField blockID, openStatus, lightsStatus,crossStatus,stationStatus, switchAdj1, switchAdj2, switchIDText, mainBlockText, subBlock1Text, subBlock2Text, connectedText;
+	private TextArea notifications;
+	private Text controllerLine, controllerSection;
     private Button murphyButton, userInputsButton, engInputsButton, toTrackModelButton, murphyBreakTrackButton, murphyBreakCTCComms, murphyBreakTMComms;
+    private RadioButton trainRB, blockRB;
 
 
 	@Override
@@ -45,8 +41,6 @@ public class Main extends Application {
         int sideWidth = 400;
         int sideHeight = 200;
         int inset = 25;
-        int rowIndex = 0;
-        int colIndex = 0;
         String applicationTitle = "Track Controller";
 
 	    //Set Stages
@@ -55,6 +49,7 @@ public class Main extends Application {
         mainStage.setTitle(applicationTitle);
 
         //Create Panes
+        BorderPane mainPane = new BorderPane();
         GridPane main = new GridPane();
         GridPane murphy = new GridPane();
         GridPane userInputs = new GridPane();
@@ -64,34 +59,60 @@ public class Main extends Application {
         GridPane blockSwitchIDs = new GridPane();
         GridPane buttonSelect = new GridPane();
         GridPane switchInfo = new GridPane();
+        GridPane trainInfo = new GridPane();
+        GridPane trainOrBlock = new GridPane();
+        ToggleGroup tOrB = new ToggleGroup();
+
 
         //Create Scenes
-        mainScene = new Scene(main, windowWidth, windowHeight);
+        mainScene = new Scene(mainPane, windowWidth, windowHeight);
         murphyScene =  new Scene(murphy, sideWidth,sideHeight);
         userInScene =  new Scene(userInputs, sideWidth,sideHeight);
         engScene =  new Scene(engInputs, sideWidth,sideHeight);
         toTMScene =  new Scene(toTrackModel, sideWidth,sideHeight);
 
+        //Create Menu Items
+        MenuBar menuBar = new MenuBar();
+        Menu menuController = new Menu("Choose Controller");
+        MenuItem[] trackControllers = new MenuItem[4];
+        trackControllers[0].setText("Red - A to G");
+        trackControllers[1].setText("Red - H to P");
+        trackControllers[2].setText("Green - A to G");
+        trackControllers[3].setText("Green - H to P");
+        menuBar.getMenus().addAll(menuController);
+        mainPane.setTop(menuBar);
+
+
 
         //Initialize Main Pane
+        mainPane.setCenter(main);
         main.setAlignment(Pos.TOP_CENTER);
         main.setPadding(new Insets(inset, inset, inset, inset));
         main.setGridLinesVisible(true);
 
 
         //Set up section titles on main screen
+        controllerLabel = new Label("Track Controller Controls:");
+        controllerLine = new Text("Line - Red");
+        controllerSection = new Text("Section - A to G");
         blockLabel = new Label("Block Info");
-        controlLabel = new Label("Controls");
+        controlLabel = new Label("Controls/Train Info");
         switchLabel = new Label("Switch Info");
-        blockLabel.setMinWidth(windowWidth/3-5);
-        controlLabel.setMinWidth(windowWidth/3-5);
-        switchLabel.setMinWidth(windowWidth/3-5);
+        blockLabel.setMinWidth(windowWidth/3-15);
+        controlLabel.setMinWidth(windowWidth/3-15);
+        switchLabel.setMinWidth(windowWidth/3-15);
         blockLabel.setFont(Font.font("Garamond",FontWeight.BOLD,20));
         controlLabel.setFont(Font.font("Garamond",FontWeight.BOLD,20));
         switchLabel.setFont(Font.font("Garamond",FontWeight.BOLD,20));
-        main.add(blockLabel, 0, 0);
-        main.add(controlLabel, 1, 0);
-        main.add(switchLabel, 2, 0);
+        controllerLabel.setFont(Font.font("Garamond",FontWeight.BOLD,26));
+        controllerLine.setFont(Font.font("Garamond",FontWeight.BOLD,26));
+        controllerSection.setFont(Font.font("Garamond",FontWeight.BOLD,26));
+        main.add(controllerLabel, 0, 0);
+        main.add(controllerLine, 1, 0);
+        main.add(controllerSection, 2, 0);
+        main.add(blockLabel, 0, 1);
+        main.add(controlLabel, 1, 1);
+        main.add(switchLabel, 2, 1);
 
         //Block Info Section -------------------------------------------
         blockInfo.setVgap(40);
@@ -101,8 +122,9 @@ public class Main extends Application {
         blockInfo.add(blockIDLabel,0,0);
 
         //Block ID text
-        blockID = new TextField("ID");
+        blockID = new TextField("A.1");
         blockInfo.add(blockID, 1,0);
+
 
         //Open label
         openLabel = new Label("Open Status: ");
@@ -110,7 +132,7 @@ public class Main extends Application {
         blockInfo.add(openLabel,0,1);
 
         //Open status text
-        openStatus = new TextField("Open/Closed");
+        openStatus = new TextField("Open/Closed/Occupied/Broken");
         blockInfo.add(openStatus, 1,1);
 
         //Lights label
@@ -140,30 +162,21 @@ public class Main extends Application {
         stationStatus = new TextField("Name/(N/A)");
         blockInfo.add(stationStatus, 1,4);
 
-        //Heater label
-        heaterLabel = new Label("Heater Status: ");
-        heaterLabel.setFont(new Font("Garamond",16));
-        blockInfo.add(heaterLabel,0,5);
-
-        //Heater status text
-        heaterStatus = new TextField("On/Off");
-        blockInfo.add(heaterStatus, 1,5);
-
         //Switch label
         switchAdjLabel = new Label("Adjacent Switches: ");
         switchAdjLabel.setFont(new Font("Garamond",16));
-        blockInfo.add(switchAdjLabel,0,6);
+        blockInfo.add(switchAdjLabel,0,5);
 
         //Switch GridPane
         switchAdj1 = new TextField("ID/(N/A)");
         blockSwitchIDs.add(switchAdj1,0,0);
         switchAdj2 = new TextField("ID/(N/A)");
         blockSwitchIDs.add(switchAdj2,1,0);
-        blockInfo.add(blockSwitchIDs, 1,6);
+        blockInfo.add(blockSwitchIDs, 1,5);
 
         blockInfo.setMinHeight(windowHeight*2/3);
 
-        main.add(blockInfo,0,1,1,2);
+        main.add(blockInfo,0,2,1,2);
 
         //Set up ButtonPane -----------------------------------------------------------------------
         murphyButton = new Button("Murphy Controls");
@@ -184,13 +197,24 @@ public class Main extends Application {
         buttonSelect.add(toTrackModelButton, 1, 1);
         buttonSelect.setVgap(10);
         buttonSelect.setHgap(10);
-        main.add(buttonSelect,1,1);
+        main.add(buttonSelect,1,2);
 
-        //Put info pane in
-        notifications = new TextField("Notifications");
-        notifications.setFont(Font.font("Garamond", 20));
+        //Put track pane in
+        notifications = new TextArea("Train ID: 1\nBlock: B.2\nSpeed: 15 m/s\nAuthority Left: 80 m\n---------------------------\n");
+        notifications.appendText("Train ID: 2\nBlock: G.1\nSpeed: 15 m/s\nAuthority Left: 80 m\n---------------------------\n");
+        notifications.appendText("Train ID: 3\nBlock: V.3\nSpeed: 15 m/s\nAuthority Left: 80 m\n---------------------------\n");
+        notifications.setFont(Font.font("Garamond", 12));
         notifications.setMinHeight(windowHeight/3);
-        main.add(notifications,1,2);
+        trainInfo.setHgap(20);
+        trainInfo.add(notifications,0,0);
+        trainRB = new RadioButton("Trains");
+        trainRB.setToggleGroup(tOrB);
+        blockRB = new RadioButton("Blocks");
+        blockRB.setToggleGroup(tOrB);
+        trainOrBlock.add(trainRB, 0, 0);
+        trainOrBlock.add(blockRB, 1, 0);
+        trainInfo.add(trainOrBlock,0,1);
+        main.add(trainInfo,1,3);
 
         //Set up switch info ------------------------------------------------------------------
         switchInfo.setVgap(45);
@@ -240,7 +264,7 @@ public class Main extends Application {
         connectedText = new TextField("Sub Block (1 or 2)");
         switchInfo.add(connectedText, 1,4);
 
-        main.add(switchInfo,2,1,1,2);
+        main.add(switchInfo,2,2,1,2);
 
         //End main pane -----------------------------------------------------------------------
 
@@ -274,7 +298,7 @@ public class Main extends Application {
         //End murphy --------------------------------------------------------------------
 
         //Engineer Inputs
-        Label setBlocklabel = new Label("Set Block ID: ");
+        Label setBlocklabel = new Label("Select Block ID: ");
         Label setLightsLabel = new Label("Set Lights: ");
         Label setCrossroadsLabel = new Label("Set Crossing Signal: ");
         Label setHeaterLabel = new Label("Set Heater: ");
@@ -348,7 +372,6 @@ public class Main extends Application {
         TextField sendSpeedText = new TextField("");
         TextField sendAuthText = new TextField("");
         Button sendData = new Button("Send to Track Model");
-        toTrackModel.setVgap(10);
 
 
         //Assemble
@@ -399,18 +422,24 @@ public class Main extends Application {
         userInputs.add(getAuthText,1,2);
 
         userInputs.add(getData,0,3,2,1);
+        //End From CTC---------------------------------------------------------------------
 
 
         mainStage.setScene(mainScene);
         mainStage.show();
+
     }
 
-    public void MurphyButtonClicked(ActionEvent e)
-    {
+    public void MurphyButtonClicked(ActionEvent e) {
         Object source = e.getSource();
         if(source == murphyBreakTrackButton)
         {
-
+            for(int i = 0; i < 10; i++)
+            {
+                int caretPosition = notifications.caretPositionProperty().get();
+                notifications.appendText("Here i am appending text to text area"+"\n");
+                notifications.positionCaret(caretPosition);
+            }
         }
     }
 
