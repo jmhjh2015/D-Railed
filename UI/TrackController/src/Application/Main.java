@@ -460,7 +460,7 @@ public class Main extends Application {
         else if(source == userInputsButton)
         {
             sideStage.setScene(userInScene);
-            newTitle = "User Inputs";
+            newTitle = "CTC Inputs";
         }
         else if(source == engInputsButton)
         {
