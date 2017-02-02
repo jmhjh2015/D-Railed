@@ -75,10 +75,12 @@ public class Main extends Application {
         MenuBar menuBar = new MenuBar();
         Menu menuController = new Menu("Choose Controller");
         MenuItem[] trackControllers = new MenuItem[4];
-        trackControllers[0].setText("Red - A to G");
-        trackControllers[1].setText("Red - H to P");
-        trackControllers[2].setText("Green - A to G");
-        trackControllers[3].setText("Green - H to P");
+        trackControllers[0]= new MenuItem("Red - A to G");
+        trackControllers[1]= new MenuItem("Red - H to U");
+        trackControllers[2]= new MenuItem("Green - A to N");
+        trackControllers[3]= new MenuItem("Green - O to YY");
+        for(int i = 0; i < 4; i++)
+            menuController.getItems().add(trackControllers[i]);
         menuBar.getMenus().addAll(menuController);
         mainPane.setTop(menuBar);
 
@@ -98,9 +100,9 @@ public class Main extends Application {
         blockLabel = new Label("Block Info");
         controlLabel = new Label("Controls/Train Info");
         switchLabel = new Label("Switch Info");
-        blockLabel.setMinWidth(windowWidth/3-15);
-        controlLabel.setMinWidth(windowWidth/3-15);
-        switchLabel.setMinWidth(windowWidth/3-15);
+        blockLabel.setMinWidth(windowWidth/3-20);
+        controlLabel.setMinWidth(windowWidth/3-20);
+        switchLabel.setMinWidth(windowWidth/3-20);
         blockLabel.setFont(Font.font("Garamond",FontWeight.BOLD,20));
         controlLabel.setFont(Font.font("Garamond",FontWeight.BOLD,20));
         switchLabel.setFont(Font.font("Garamond",FontWeight.BOLD,20));
