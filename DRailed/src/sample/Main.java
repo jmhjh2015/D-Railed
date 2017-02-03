@@ -140,7 +140,7 @@ public class Main extends Application {
 		{
 			MBOController MBO = new MBOController();
 			try {
-				MBO.start(primaryStage);
+				MBO.start(new Stage());
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
