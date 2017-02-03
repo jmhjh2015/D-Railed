@@ -1,9 +1,5 @@
-package Application;
+package TrainController;
 
-/**
- * Created by aadu on 1/21/17.
- */
-import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -16,98 +12,106 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
-public class Main extends Application {
+import java.io.IOException;
+
+/**
+ * Created by aadu on 2/3/17.
+ */
+public class TrainController {
+	private final Stage stage = new Stage();
+
+	//Create Scene
+	private Scene scene;
+
 	//Class strings
 	private String applicationTitle = "Train Controller";
 
 	//Class integers
-	private int windowWidth = 775;
+	private int windowWidth = 800;
 	private int windowHight = 475;
 	private int inset = 25;
 	private int colWidth = 75;
 
-	@Override
-	public void start(Stage primaryStage) throws Exception
+	public TrainController() throws IOException
 	{
 
-		Parent root = FXMLLoader.load(getClass().getResource("Application.fxml"));
-		primaryStage.setTitle(applicationTitle);
+		stage.setTitle(applicationTitle);
 
 		GridPane grid = new GridPane();
-	   	grid.setAlignment(Pos.CENTER);
-        grid.setPadding(new Insets(inset, inset, inset, inset));
+		grid.setAlignment(Pos.CENTER);
+		grid.setPadding(new Insets(inset, inset, inset, inset));
 		//grid.setHgap(10);
 		grid.setVgap(10);
 
-        //Row Index 0
-        Label trainIDLabel = new Label("Train: ");
-        trainIDLabel.setTextAlignment(TextAlignment.LEFT);
-        trainIDLabel.setMinWidth(colWidth);
-        trainIDLabel.setAlignment(Pos.CENTER_LEFT);
-        grid.add(trainIDLabel, 0, 0);
+		//Row Index 0
+		Label trainIDLabel = new Label("Train: ");
+		trainIDLabel.setTextAlignment(TextAlignment.LEFT);
+		trainIDLabel.setMinWidth(colWidth);
+		trainIDLabel.setAlignment(Pos.CENTER_LEFT);
+		grid.add(trainIDLabel, 0, 0);
 
-        Text trainIDText = new Text();
-        trainIDText.setWrappingWidth(colWidth*2);
-        trainIDText.setText("TEMPTRAINID");
-        trainIDText.setTextAlignment(TextAlignment.RIGHT);
-        grid.add(trainIDText, 0, 0);
+		Text trainIDText = new Text();
+		trainIDText.setWrappingWidth(colWidth*2);
+		trainIDText.setText("TEMPTRAINID");
+		trainIDText.setTextAlignment(TextAlignment.RIGHT);
+		grid.add(trainIDText, 0, 0);
 
-        Label speedLabel = new Label("Speed: ");
-        speedLabel.setMinWidth(colWidth*1.5);
-        speedLabel.setTextAlignment(TextAlignment.RIGHT);
-        speedLabel.setAlignment(Pos.CENTER_RIGHT);
-        grid.add(speedLabel, 3, 0);
+		Label speedLabel = new Label("Speed: ");
+		speedLabel.setMinWidth(colWidth*1.5);
+		speedLabel.setTextAlignment(TextAlignment.RIGHT);
+		speedLabel.setAlignment(Pos.CENTER_RIGHT);
+		grid.add(speedLabel, 3, 0);
 
-        Text speedText = new Text();
-        speedText.setText("TEMPSPEED");
-        speedText.setWrappingWidth(colWidth*1.5);
-        speedText.setTextAlignment(TextAlignment.LEFT);
-        grid.add(speedText, 4, 0);
+		Text speedText = new Text();
+		speedText.setText("TEMPSPEED");
+		speedText.setWrappingWidth(colWidth*1.5);
+		speedText.setTextAlignment(TextAlignment.LEFT);
+		grid.add(speedText, 4, 0);
 
-        final Button manualBtn = new Button("MANUAL");
-        HBox hManualBtn = new HBox(0);
-        hManualBtn.setMinWidth(colWidth*3);
-        manualBtn.setMinWidth(colWidth*2);
-        manualBtn.setAlignment(Pos.CENTER);
-        hManualBtn.setAlignment(Pos.CENTER_RIGHT);
-        hManualBtn.getChildren().add(manualBtn);
-        grid.add(hManualBtn, 5, 0, 3, 1);
+		final Button manualBtn = new Button("MANUAL");
+		HBox hManualBtn = new HBox(0);
+		hManualBtn.setMinWidth(colWidth*3);
+		manualBtn.setMinWidth(colWidth*2);
+		manualBtn.setAlignment(Pos.CENTER);
+		hManualBtn.setAlignment(Pos.CENTER_RIGHT);
+		hManualBtn.getChildren().add(manualBtn);
+		grid.add(hManualBtn, 5, 0, 3, 1);
 
-        //Row Index 1
-        Label routeLabel = new Label("Route: ");
-        routeLabel.setTextAlignment(TextAlignment.LEFT);
-        routeLabel.setMinWidth(colWidth);
-        routeLabel.setAlignment(Pos.CENTER_LEFT);
-        grid.add(routeLabel, 0, 1);
+		//Row Index 1
+		Label routeLabel = new Label("Route: ");
+		routeLabel.setTextAlignment(TextAlignment.LEFT);
+		routeLabel.setMinWidth(colWidth);
+		routeLabel.setAlignment(Pos.CENTER_LEFT);
+		grid.add(routeLabel, 0, 1);
 
-        Text routeText = new Text();
-        routeText.setWrappingWidth(colWidth*2);
-        routeText.setText("TEMPROUTE");
-        routeText.setTextAlignment(TextAlignment.RIGHT);
-        grid.add(routeText, 0, 1);
+		Text routeText = new Text();
+		routeText.setWrappingWidth(colWidth*2);
+		routeText.setText("TEMPROUTE");
+		routeText.setTextAlignment(TextAlignment.RIGHT);
+		grid.add(routeText, 0, 1);
 
-        Label powerLabel = new Label("Route: ");
-        powerLabel.setMinWidth(colWidth*1.5);
-        powerLabel.setTextAlignment(TextAlignment.RIGHT);
-        powerLabel.setAlignment(Pos.CENTER_RIGHT);
-        grid.add(powerLabel, 3, 1);
+		Label powerLabel = new Label("Power: ");
+		powerLabel.setMinWidth(colWidth*1.5);
+		powerLabel.setTextAlignment(TextAlignment.RIGHT);
+		powerLabel.setAlignment(Pos.CENTER_RIGHT);
+		grid.add(powerLabel, 3, 1);
 
-        Text powerText = new Text();
-        powerText.setText("TEMPROUTE");
-        powerText.setWrappingWidth(colWidth*1.5);
-        powerText.setTextAlignment(TextAlignment.LEFT);
-        grid.add(powerText, 4, 1);
+		Text powerText = new Text();
+		powerText.setText("TEMPOWER");
+		powerText.setWrappingWidth(colWidth*1.5);
+		powerText.setTextAlignment(TextAlignment.LEFT);
+		grid.add(powerText, 4, 1);
 
-        final Button automaticBtn = new Button("AUTOMATIC");
-        HBox hAutomaticBtn = new HBox(0);
-        hAutomaticBtn.setMinWidth(colWidth*3);
-        automaticBtn.setMinWidth(colWidth*2);
-        automaticBtn.setAlignment(Pos.CENTER);
-        hAutomaticBtn.setAlignment(Pos.CENTER_RIGHT);
-        hAutomaticBtn.getChildren().add(automaticBtn);
-        grid.add(hAutomaticBtn, 5, 1, 3, 1);
+		final Button automaticBtn = new Button("AUTOMATIC");
+		HBox hAutomaticBtn = new HBox(0);
+		hAutomaticBtn.setMinWidth(colWidth*3);
+		automaticBtn.setMinWidth(colWidth*2);
+		automaticBtn.setAlignment(Pos.CENTER);
+		hAutomaticBtn.setAlignment(Pos.CENTER_RIGHT);
+		hAutomaticBtn.getChildren().add(automaticBtn);
+		grid.add(hAutomaticBtn, 5, 1, 3, 1);
 
-        //Row Index 2
+		//Row Index 2
 		Label maStatusLabel = new Label("Control Status: ");
 		maStatusLabel.setTextAlignment(TextAlignment.RIGHT);
 		maStatusLabel.setMinWidth(colWidth * 1.5);
@@ -131,7 +135,7 @@ public class Main extends Application {
 		hEmerBtn.setAlignment(Pos.TOP_RIGHT);
 		hEmerBtn.getChildren().add(emerBtn);
 		grid.add(hEmerBtn, 5, 2, 3, 2);
-		
+
 		//Row Index 3
 		Label acLabel = new Label("Air Conditioning");
 		acLabel.setTextAlignment(TextAlignment.LEFT);
@@ -209,12 +213,17 @@ public class Main extends Application {
 		heatGrid.setMinWidth(colWidth*2);
 		grid.add(heatGrid, 1, 4, 2, 1);
 
-		Label blocking = new Label();
-		blocking.setMinWidth(colWidth*3);
-		blocking.setText("BLOCKING LIMIT: XX mph");
-		blocking.setTextAlignment(TextAlignment.CENTER);
-		blocking.setAlignment(Pos.CENTER_RIGHT);
-		grid.add(blocking, 6, 4, 3, 2);
+		final Button brakeBtn = new Button("SERVICE\nBRAKE");
+		brakeBtn.setTextAlignment(TextAlignment.CENTER);
+		HBox hBrakeBtn = new HBox(0);
+		hBrakeBtn.setMinWidth(colWidth * 3);
+		hBrakeBtn.setMinHeight(colWidth);
+		brakeBtn.setMinWidth(colWidth*2);
+		brakeBtn.setMinHeight(colWidth);
+		brakeBtn.setAlignment(Pos.CENTER);
+		hBrakeBtn.setAlignment(Pos.TOP_RIGHT);
+		hBrakeBtn.getChildren().add(brakeBtn);
+		grid.add(hBrakeBtn, 5, 4, 3, 2);
 
 
 		//Row Index 5
@@ -348,14 +357,7 @@ public class Main extends Application {
 		grid.add(movementStatus, 3, 7, 2, 1);
 
 		Scene scene = new Scene(grid, windowWidth, windowHight);
-		primaryStage.setScene(scene);
-		primaryStage.show();
-
-
-	}
-
-
-	public static void main(String[] args) {
-		launch(args);
+		stage.setScene(scene);
+		stage.show();
 	}
 }
