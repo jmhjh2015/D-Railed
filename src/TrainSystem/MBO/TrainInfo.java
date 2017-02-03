@@ -2,6 +2,7 @@ package TrainSystem.MBO;
 
 
 import java.util.ArrayList;
+import 
 
 public class TrainInfo {
     ArrayList<Train> trains;
