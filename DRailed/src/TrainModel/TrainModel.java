@@ -1,4 +1,7 @@
+
 package TrainModel;
+
+
 
 
 import javafx.application.Application;
@@ -16,6 +19,7 @@ import javafx.stage.Stage;
 
 public class TrainModel {
     private final Stage primaryStage = new Stage();
+
     //Class strings
     private String applicationTitle = "Train Model";
 
@@ -27,8 +31,6 @@ public class TrainModel {
 
     public TrainModel() throws Exception
     {
-
-        //Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle(applicationTitle);
 
         GridPane grid = new GridPane();
@@ -258,4 +260,5 @@ public class TrainModel {
 
 
     }
+
 }
