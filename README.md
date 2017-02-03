@@ -14,10 +14,10 @@ Train Traffic Controller and Model Application
 * CTC Office - Ray Huang
 * Model Block Overlay - Joe Roesinger
 
-## UI Prototype:
+## TrainSystem.MBO.UI Prototype:
     
-* UI Frame
-* Power Point Explanation of UI
+* TrainSystem.MBO.UI Frame
+* Power Point Explanation of TrainSystem.MBO.UI
 
 ## Work Package 1:
 
@@ -30,8 +30,8 @@ Train Traffic Controller and Model Application
 
 ### Individual:
 
-* UI Model
-* UI Design
+* TrainSystem.MBO.UI Model
+* TrainSystem.MBO.UI Design
 * Risk Assessment
 
 ## Design Review

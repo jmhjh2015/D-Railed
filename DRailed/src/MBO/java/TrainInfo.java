@@ -1,8 +1,10 @@
-package TrainSystem.MBO;
+package MBO.java;
 
+
+import MBO.java.Train;
 
 import java.util.ArrayList;
-import 
+// import TrainModel.Train;
 
 public class TrainInfo {
     ArrayList<Train> trains;
@@ -22,6 +24,7 @@ public class TrainInfo {
 
     public Train getTrain(int id) {
         // Return train with matching ID
+        return null;
     }
 
     public void deleteTrain(int id) {
@@ -36,7 +39,7 @@ public class TrainInfo {
     public boolean trainExists(int id) {
         // Check if train id is in trains
         for(Train t : trains) {
-            if(t.getId().equals(id))
+            if(t.getId() == id)
                 return true;
         }
         return false;

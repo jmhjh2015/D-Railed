@@ -1,4 +1,4 @@
-package TrainSystem.MBO;
+package MBO.java;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
