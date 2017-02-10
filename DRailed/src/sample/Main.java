@@ -13,7 +13,8 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-
+import TrainController.TrainController;
+import TrainModel.TrainModel;
 
 import java.io.IOException;
 
@@ -121,10 +122,11 @@ public class Main extends Application {
 		trainModelBtn.setOnAction((ActionEvent e) ->
 		{
 			try {
-				TrainController trainController = new TrainController();
-			} catch (IOException e1) {
+				TrainModel trainModel = new TrainModel();
+			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
+
 		});
 
 		trainControllerBtn.setOnAction((ActionEvent e) ->
