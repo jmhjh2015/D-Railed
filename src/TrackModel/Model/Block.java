@@ -101,10 +101,10 @@ public class Block {
         this.light = new Light("" + blockNumber);
 
         // status
-        this.powerState = false;
-        this.railState = false;
-        this.circuitState = false;
-        this.trackState = "CLOSED";
+        this.powerState = true;
+        this.railState = true;
+        this.circuitState = true;
+        this.trackState = "OPEN";
     }
 
     public void setParameters(Double length, Double grade, Double speedLimit, Double elevation, Double cumElevation, Double temperature, String direction){
@@ -225,12 +225,24 @@ public class Block {
         this.trackState = trackState;
     }
 
+    public void toggleTrackState(){
+        if(trackState.equals("OPEN")){
+            trackState = "CLOSED";
+        }else{
+            trackState = "OPEN";
+        }
+    }
+
     public boolean isRailState() {
         return railState;
     }
 
     public void setRailState(boolean railState) {
         this.railState = railState;
+    }
+
+    public void toggleRailState(){
+        this.railState = (!this.railState);
     }
 
     public boolean isCircuitState() {
@@ -241,12 +253,20 @@ public class Block {
         this.circuitState = circuitState;
     }
 
+    public void toggleCircuitState(){
+        this.circuitState = (!this.circuitState);
+    }
+
     public boolean isPowerState() {
         return powerState;
     }
 
     public void setPowerState(boolean powerState) {
         this.powerState = powerState;
+    }
+
+    public void togglePowerState(){
+        this.powerState = (!this.powerState);
     }
 
     public Switch getSwitch() {

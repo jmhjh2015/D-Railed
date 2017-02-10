@@ -136,7 +136,7 @@ public class Line {
     }
 
     public boolean existsSwitch(Integer switchNumber){
-        if(switchNumber != null && !switches.isEmpty()) {
+        if(switchNumber != null) {
             for (Switch s : switches) {
                 if (s.getSwitchNumber().equals(switchNumber))
                     return true;

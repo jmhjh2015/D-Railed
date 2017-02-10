@@ -114,10 +114,34 @@ public class TrackModel
                     String other = (String) infraSet.get(3);
                     Switch updateSwitch = null;
 
+                    // switch is a main switch
                     if((Switch) infraSet.get(1) == null){
                         updateSwitch = (Switch) infraSet.get(4);
+
+                        for(Switch sw : updateLine.getSwitches()){
+                            for(Section se : updateLine.getSections()){
+                                for(Block b : se.getBlocks()){
+                                    if(b.getSwitch() != null && b.getSwitch().getSwitchNumber().equals(sw.getSwitchNumber())){
+                                        b.setSwitch(sw); // update switch
+                                    }
+                                }
+                            }
+                        }
+
+                    // switch is a sub switch
                     }else if((Switch) infraSet.get(4) == null){
                         updateSwitch = (Switch) infraSet.get(1);
+
+                        for(Switch sw : updateLine.getSwitches()){
+                            for(Section se : updateLine.getSections()){
+                                for(Block b : se.getBlocks()){
+                                    if(b.getSwitch() != null && b.getSwitch().getSwitchNumber().equals(sw.getSwitchNumber())){
+                                        b.setSwitch(sw); // update switch
+                                    }
+                                }
+                            }
+                        }
+
                     }else{
                         updateSwitch = null;
                     }
@@ -179,7 +203,9 @@ public class TrackModel
         // 1.) Application.Track.Model.Switch main infrastructure is found
         if(infrastructure.contains("SWITCH"))
         {
-            infraSet.add(parseSwitch(updateLine, blockNumber, switchInfo, infrastructure));
+            Switch updateSwitch = parseSwitch(updateLine, section, blockNumber, switchInfo, infrastructure);
+            getLine(updateLine.getLine()).addSwitch(updateSwitch);
+            infraSet.add(updateSwitch);
         }
         else
         {
@@ -244,7 +270,7 @@ public class TrackModel
         return updateSwitch;
     }
 
-    private Switch parseSwitch(Line updateLine, Integer blockNumber, String switchInfo, String infra) {
+    private Switch parseSwitch(Line updateLine, String section, Integer blockNumber, String switchInfo, String infra) {
 
         Switch updateSwitch = null;
 

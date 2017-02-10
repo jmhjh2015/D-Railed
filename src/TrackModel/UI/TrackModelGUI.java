@@ -3,6 +3,7 @@ package TrackModel.UI;
 /**
  * Created by andrew on 1/21/17.
  */
+
 import TrackModel.Model.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -10,6 +11,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -80,7 +82,7 @@ public class TrackModelGUI {
 
         // Button Info Section
         blockInfoLabel = getBlockInfoLabel();
-        FlowPane blockInfoPanel = getBlockInfoPane(selectedBlock, blockInfo.getMinWidth());
+        FlowPane blockInfoPanel = getBlockInfoPane(blockInfo.getMinWidth());
         VBox metricBox = getMetricBox(blockInfoPanel);
         blockMonitorLayout.add(metricBox, 0, 0);
 
@@ -91,12 +93,132 @@ public class TrackModelGUI {
         Label blockInfraLabel = new Label("Block Infrastructure: ");
         blockInfraLabel.setTextAlignment(TextAlignment.LEFT);
 
-        blockInfra.add(blockInfraLabel, 0, 0);
         blockInfra.setMinHeight(windowHeight/2);
         blockInfra.setMaxHeight(windowHeight/2);
         blockInfra.setMinWidth(windowWidth/3);
         blockInfra.setMaxWidth(windowWidth/3);
 
+        FlowPane trainInfra = null;
+        FlowPane switchInfra = null;
+        FlowPane stationInfra = null;
+        FlowPane crossingInfra = null;
+        FlowPane lightsInfra = null;
+
+        //Train train = selectedBlock.getTrain();
+        //if(train != null)
+            trainInfra = getTrainInfoPane();
+
+        Switch dispSwitch = selectedBlock.getSwitch();
+        if(dispSwitch != null)
+            switchInfra = getSwitchInfoPane(blockInfra.getMinHeight(), blockInfra.getMinWidth(), dispSwitch);
+
+        Station dispStation = selectedBlock.getStation();
+        if(dispStation != null)
+            stationInfra = getStationInfoPane(blockInfra.getMinHeight(), blockInfra.getMinWidth(), dispStation);
+
+        Crossing dispCrossing = selectedBlock.getCrossing();
+        if(dispCrossing != null)
+            crossingInfra = getCrossingInfoPane(blockInfra.getMinHeight(), blockInfra.getMinWidth(), dispCrossing);
+
+        Light light = selectedBlock.getLight();
+        if(light != null)
+            lightsInfra = getLightInfoPane();
+
+        blockInfra = populateBlockInfrastructure(blockInfraLabel, trainInfra, switchInfra, stationInfra, crossingInfra, lightsInfra);
+        blockMonitorLayout.add(blockInfra, 1,0);
+
+        ///////////////////////////////////////////////
+        // Block Status Segment                      //
+        ///////////////////////////////////////////////
+
+        Label blockStatusLabel = new Label("Block Status: ");
+
+        blockStatus.setMinHeight(windowHeight/2);
+        blockStatus.setMaxHeight(windowHeight/2);
+        blockStatus.setMinWidth(windowWidth/3);
+        blockStatus.setMaxWidth(windowWidth/3);
+
+        FlowPane conditionStatus = getConditionStatusPane();
+        FlowPane railStatus = getRailStatusPane();
+        FlowPane circuitStatus = getCircuitStatusPane();
+        FlowPane powerStatus = getPowerStatusPane();
+
+        blockStatus = populateBlockStatus(blockStatusLabel, conditionStatus, railStatus, circuitStatus, powerStatus);
+        blockMonitorLayout.add(blockStatus, 2, 0);
+
+        ////////////////////////////////////
+        // Add Segments To Main Grid      //
+        ////////////////////////////////////
+
+        mainGrid = populateMainGrid(layoutMenuTitle);
+
+        scene = new Scene(mainGrid, windowWidth, windowHeight);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private GridPane populateBlockInfrastructure(Label blockInfraLabel, FlowPane trainInfra, FlowPane switchInfra, FlowPane stationInfra, FlowPane crossingInfra, FlowPane lightsInfra) {
+
+        GridPane blockInfra = new GridPane();
+        blockInfra.setMinHeight(windowHeight/2);
+        blockInfra.setMaxHeight(windowHeight/2);
+        blockInfra.setMinWidth(windowWidth/3);
+        blockInfra.setMaxWidth(windowWidth/3);
+
+        int i = 1;
+
+        blockInfra.add(blockInfraLabel, 0, 0);
+
+        if(trainInfra != null){
+            blockInfra.add(trainInfra, 0, i);
+            i++;
+        }
+        if(switchInfra != null){
+            blockInfra.add(switchInfra, 0, i);
+            i++;
+        }
+        if(stationInfra != null){
+            blockInfra.add(stationInfra, 0, i);
+            i++;
+        }
+        if(crossingInfra != null){
+            blockInfra.add(crossingInfra, 0, i);
+            i++;
+        }
+        if(lightsInfra != null){
+            blockInfra.add(lightsInfra, 0, i);
+            i++;
+        }
+
+        return blockInfra;
+
+    }
+
+    private FlowPane getLightInfoPane() {
+        FlowPane lightsInfra = new FlowPane();
+        lightsInfra.setMaxHeight((blockInfra.getMaxHeight()/6)-3);
+        lightsInfra.setMinHeight((blockInfra.getMinHeight()/6)-3);
+        lightsInfra.setMaxWidth(blockInfra.getMinWidth());
+        lightsInfra.setMinWidth(blockInfra.getMaxWidth());
+        lightsInfra.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+
+        lightsIcon.setFitHeight(lightsInfra.getMaxHeight());
+        lightsIcon.setFitWidth(50);
+
+        GridPane lightsLabels = new GridPane();
+        lightsLabels.setAlignment(Pos.CENTER_LEFT);
+
+        Label lightsStatus = new Label("Lights Status: ON");
+
+        lightsLabels.add(lightsStatus, 0, 0);
+        lightsLabels.setPadding(new Insets(0, 0, 0, 10));
+
+        lightsInfra.getChildren().add(lightsIcon);
+        lightsInfra.getChildren().add(lightsLabels);
+        return lightsInfra;
+    }
+
+    private FlowPane getTrainInfoPane() {
         FlowPane trainInfra = new FlowPane();
         trainInfra.setMaxHeight((blockInfra.getMaxHeight()/6)-4);
         trainInfra.setMinHeight((blockInfra.getMinHeight()/6)-4);
@@ -119,77 +241,7 @@ public class TrackModelGUI {
 
         trainInfra.getChildren().add(trainIcon);
         trainInfra.getChildren().add(trainLabels);
-
-        Switch dispSwitch = selectedBlock.getSwitch();
-        if(dispSwitch != null)
-        {
-            FlowPane switchInfra = getSwitchInfoPane(blockInfra.getMinHeight(), blockInfra.getMinWidth(), switchIcon, dispSwitch);
-            blockInfra.add(switchInfra, 0, 2);
-        }
-
-        Station dispStation = selectedBlock.getStation();
-        if(dispStation != null)
-        {
-            FlowPane stationInfra = getStationInfoPane(blockInfra.getMinHeight(), blockInfra.getMinWidth(), stationIcon, dispStation);
-            blockInfra.add(stationInfra, 0, 3);
-        }
-
-        Crossing dispCrossing = selectedBlock.getCrossing();
-        if(dispCrossing != null)
-        {
-            FlowPane crossingInfra = getCrossingInfoPane(blockInfra.getMinHeight(), blockInfra.getMinWidth(), crossingIcon, dispCrossing);
-            blockInfra.add(crossingInfra, 0, 4);
-        }
-
-        FlowPane lightsInfra = new FlowPane();
-        lightsInfra.setMaxHeight((blockInfra.getMaxHeight()/6)-3);
-        lightsInfra.setMinHeight((blockInfra.getMinHeight()/6)-3);
-        lightsInfra.setMaxWidth(blockInfra.getMinWidth());
-        lightsInfra.setMinWidth(blockInfra.getMaxWidth());
-        lightsInfra.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
-
-        lightsIcon.setFitHeight(lightsInfra.getMaxHeight());
-        lightsIcon.setFitWidth(50);
-
-        GridPane lightsLabels = new GridPane();
-        lightsLabels.setAlignment(Pos.CENTER_LEFT);
-
-        Label lightsStatus = new Label("Lights Status: ON");
-
-        lightsLabels.add(lightsStatus, 0, 0);
-        lightsLabels.setPadding(new Insets(0, 0, 0, 10));
-
-        lightsInfra.getChildren().add(lightsIcon);
-        lightsInfra.getChildren().add(lightsLabels);
-
-        blockInfra.add(trainInfra, 0, 1);
-        blockInfra.add(lightsInfra, 0, 6);
-
-        blockMonitorLayout.add(blockInfra, 1,0);
-
-        ///////////////////////////////////////////////
-        // Block Status Segment                      //
-        ///////////////////////////////////////////////
-
-        Label blockStatusLabel = new Label("Block Status: ");
-
-        FlowPane conditionStatus = getConditionStatusPane();
-        FlowPane railStatus = getRailStatusPane();
-        FlowPane circuitStatus = getCircuitStatusPane();
-        FlowPane powerStatus = getPowerStatusPane();
-
-        blockStatus = populateBlockStatus(blockStatusLabel, conditionStatus, railStatus, circuitStatus, powerStatus);
-        blockMonitorLayout.add(blockStatus, 3, 0);
-
-        ////////////////////////////////////
-        // Add Segments To Main Grid      //
-        ////////////////////////////////////
-
-        mainGrid = populateMainGrid(layoutMenuTitle);
-
-        scene = new Scene(mainGrid, windowWidth, windowHeight);
-        stage.setScene(scene);
-        stage.show();
+        return trainInfra;
     }
 
     private GridPane populateMainGrid(Label layoutMenuTitle) {
@@ -207,11 +259,11 @@ public class TrackModelGUI {
     private GridPane populateBlockStatus(Label blockStatusLabel, FlowPane conditionStatus, FlowPane railStatus, FlowPane circuitStatus, FlowPane powerStatus) {
 
         GridPane blockStatus = new GridPane();
-
         blockStatus.setMinHeight(windowHeight/2);
         blockStatus.setMaxHeight(windowHeight/2);
         blockStatus.setMinWidth(windowWidth/3);
         blockStatus.setMaxWidth(windowWidth/3);
+
         blockStatus.add(blockStatusLabel, 0, 0);
         blockStatus.add(conditionStatus, 0, 1);
         blockStatus.add(railStatus, 0, 2);
@@ -309,7 +361,9 @@ public class TrackModelGUI {
     }
 
     private FlowPane getConditionStatusPane() {
+
         FlowPane conditionStatus = new FlowPane();
+
         conditionStatus.setMaxHeight((blockInfra.getMaxHeight()/5)-4);
         conditionStatus.setMinHeight((blockInfra.getMinHeight()/5)-4);
         conditionStatus.setMaxWidth(blockInfra.getMinWidth());
@@ -357,7 +411,7 @@ public class TrackModelGUI {
         FileChooser fileChooser = new FileChooser();
         Stage fileSelect = new Stage();
         fileSelect.setTitle("Choose a track layout data file to import:");
-        fileChooser.setInitialDirectory(new File("D-Railed/src/TrackModel/UI/resources"));
+        fileChooser.setInitialDirectory(new File("src/TrackModel/UI/resources"));
 
         // Import Track Button
         Button importTrack = new Button("Import Track");
@@ -381,12 +435,108 @@ public class TrackModelGUI {
         infraOver.setMinHeight(30);
         infraOver.setMaxHeight(30);
 
+        // import a track and modify the track layout
+        importTrack.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent e){
+                File file = fileChooser.showOpenDialog(fileSelect);
+                if(file != null)
+                {
+                    track.importTrack(file.getAbsolutePath());
+                    ScrollPane scrollPane = parseTrackForDisplay();
+                    trackLayout.add(scrollPane, 0, 0);
+                }
+            }
+        });
+
         Button murphyCtrl = new Button("Murphy Controls");
         murphyCtrl.setMinHeight(30);
         murphyCtrl.setMaxHeight(30);
 
+        // modify status of a selected block
+        murphyCtrl.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent e){
+                if(selectedBlock.getBlockNumber() == null){
+                    Alert alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Murphy Control Error");
+                    alert.setHeaderText("No Block Selected");
+                    alert.setContentText("Please select a block to use this function!");
+                    alert.show();
+                    return;
+                }
+
+                Stage murphy = new Stage();
+                GridPane murphyPanel = new GridPane();
+
+                VBox murphyChange = new VBox();
+                HBox confirm = new HBox();
+
+                Label todo = new Label("Select systems to simulate track state:");
+                todo.setPadding(new Insets(10));
+
+                Label currentBlock = new Label("Line: " + selectedBlock.getLine() + "Section: " + selectedBlock.getSection() +  "Block: " + selectedBlock.getBlockNumber());
+                currentBlock.setPadding(new Insets(10));
+
+                CheckBox condButton = new CheckBox("Close Track");
+                CheckBox railButton = new CheckBox("Break Rail");
+                CheckBox circuitButton = new CheckBox("Track Circuit Failure");
+                CheckBox powerButton = new CheckBox("Power Failure");
+
+                Button okButton = new Button("OK");
+
+                okButton.setOnAction(new EventHandler<ActionEvent>(){
+                    public void handle(ActionEvent e){
+                        if(condButton.isSelected())
+                            selectedBlock.toggleTrackState();
+
+                        if(railButton.isSelected())
+                            selectedBlock.toggleRailState();
+
+                        if(circuitButton.isSelected())
+                            selectedBlock.toggleCircuitState();
+
+                        if(powerButton.isSelected())
+                            selectedBlock.togglePowerState();
+
+                        updateBlockMonitor();
+                        murphy.close();
+                    }
+                });
+
+                Button cancelButton = new Button("Cancel");
+
+                cancelButton.setOnAction(new EventHandler<ActionEvent>(){
+                    public void handle(ActionEvent e){
+                        murphy.close();
+                    }
+                });
+
+                murphyChange.getChildren().addAll(condButton, railButton, circuitButton, powerButton);
+                murphyChange.setPadding(new Insets(10));
+
+                confirm.getChildren().addAll(okButton, cancelButton);
+                confirm.setPadding(new Insets(10));
+
+                murphyPanel.add(todo, 0, 0);
+                murphyPanel.add(currentBlock, 0, 1);
+                murphyPanel.add(murphyChange, 0, 2);
+                murphyPanel.add(confirm, 0, 3);
+
+                Scene murphyScene = new Scene(murphyPanel, 400, 500);
+                murphy.setTitle("Murphy Control");
+                murphy.setScene(murphyScene);
+                murphy.show();
+
+            }
+        });
+
         menu.getChildren().addAll(importTrack, infraOver, murphyCtrl);
         return menu;
+    }
+
+    private void updateBlockMonitor() {
+        updateBlockInfoView();
+        updateBlockStatus();
+        updateBlockInfrastructure();
     }
 
     private ScrollPane parseTrackForDisplay() {
@@ -407,10 +557,8 @@ public class TrackModelGUI {
                     blockButton.setAlignment(Pos.CENTER_LEFT);
                     blockButton.setTextAlignment(TextAlignment.LEFT);
                     blockButton.setOnAction((event) -> {
-                        selectedBlock = section.getBlock(block.getBlockNumber());
-                        blockInfoLabel = new Label("Block Info: Line: " + selectedBlock.getLine() + " | Section: " + selectedBlock.getSection() + " | Block: " + selectedBlock.getBlockNumber());
-                        //blockInfo.add(blockInfoLabel, 0, 0);
-                        //blockMonitor.add(blockInfo, 0, 0);
+                        selectedBlock = block;
+                        updateBlockMonitor();
                     });
                     blockButtons.add(blockButton);
                     buttonBox.getChildren().add(blockButton);
@@ -433,36 +581,117 @@ public class TrackModelGUI {
         return scrollPane;
     }
 
+    private void updateBlockInfrastructure() {
+        Label blockInfraLabel = new Label("Block Infrastructure: ");
+        blockInfraLabel.setTextAlignment(TextAlignment.LEFT);
+
+        blockInfra.getChildren().removeAll();
+
+        blockInfra.setMinHeight(windowHeight/2);
+        blockInfra.setMaxHeight(windowHeight/2);
+        blockInfra.setMinWidth(windowWidth/3);
+        blockInfra.setMaxWidth(windowWidth/3);
+
+        FlowPane trainInfra = null;
+        FlowPane switchInfra = null;
+        FlowPane stationInfra = null;
+        FlowPane crossingInfra = null;
+        FlowPane lightsInfra = null;
+
+        //Train train = selectedBlock.getTrain();
+        //if(train != null)
+            trainInfra = getTrainInfoPane();
+
+        Switch dispSwitch = selectedBlock.getSwitch();
+        if(dispSwitch != null)
+            switchInfra = getSwitchInfoPane(blockInfra.getMinHeight(), blockInfra.getMinWidth(), dispSwitch);
+
+        Station dispStation = selectedBlock.getStation();
+        if(dispStation != null)
+            stationInfra = getStationInfoPane(blockInfra.getMinHeight(), blockInfra.getMinWidth(), dispStation);
+
+        Crossing dispCrossing = selectedBlock.getCrossing();
+        if(dispCrossing != null)
+            crossingInfra = getCrossingInfoPane(blockInfra.getMinHeight(), blockInfra.getMinWidth(), dispCrossing);
+
+        Light light = selectedBlock.getLight();
+        if(light != null)
+            lightsInfra = getLightInfoPane();
+
+        blockMonitorLayout.getChildren().remove(1);
+
+        blockInfra = populateBlockInfrastructure(blockInfraLabel, trainInfra, switchInfra, stationInfra, crossingInfra, lightsInfra);
+        blockMonitorLayout.add(blockInfra, 2, 0);
+    }
+
+    private void updateBlockStatus() {
+
+        Label blockStatusLabel = new Label("Block Status: ");
+
+        FlowPane conditionStatus = getConditionStatusPane();
+        FlowPane railStatus = getRailStatusPane();
+        FlowPane circuitStatus = getCircuitStatusPane();
+        FlowPane powerStatus = getPowerStatusPane();
+
+        blockStatus = populateBlockStatus(blockStatusLabel, conditionStatus, railStatus, circuitStatus, powerStatus);
+
+        blockMonitorLayout.getChildren().remove(2);
+        blockMonitorLayout.add(blockStatus, 3, 0);
+
+    }
+
+    private void updateBlockInfoView() {
+
+        blockInfoLabel = new Label("Block Info: Line: " + selectedBlock.getLine() + " | Section: " + selectedBlock.getSection() + " | Block: " + selectedBlock.getBlockNumber());
+
+        FlowPane blockInfoPanel = getBlockInfoPane(blockInfo.getMinWidth());
+        VBox metricBox = getMetricBox(blockInfoPanel);
+
+        blockMonitorLayout.getChildren().remove(0);
+        blockMonitorLayout.getChildren().add(0, metricBox);
+    }
+
     private Label getLayoutLabel() {
+
         Label layoutMenuTitle = new Label("TrackLayoutMenu");
+
         layoutMenuTitle.setPadding(new Insets(0,0,0,10));
         layoutMenuTitle.setTextAlignment(TextAlignment.LEFT);
         layoutMenuTitle.setMinWidth(gridBlock);
         layoutMenuTitle.setMinHeight(20);
         layoutMenuTitle.setMaxHeight(20);
         layoutMenuTitle.setAlignment(Pos.CENTER_LEFT);
+
         return layoutMenuTitle;
     }
 
     private GridPane getBlockInfoPane() {
+
         GridPane blockInfo = new GridPane();
+
         blockInfo.setAlignment(Pos.TOP_LEFT);
         blockInfo.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
         blockInfo.setMinHeight(windowHeight/2);
         blockInfo.setMaxHeight(windowHeight/2);
         blockInfo.setMinWidth(windowWidth/3);
         blockInfo.setMaxWidth(windowWidth/3);
+
         return blockInfo;
+
     }
 
     private FlowPane getButtonMenuLayoutPane() {
+
         FlowPane buttonMenu = new FlowPane();
+
         buttonMenu.setAlignment(Pos.CENTER);
         buttonMenu.setMinWidth(windowWidth);
         buttonMenu.setMaxWidth(windowWidth);
         buttonMenu.setMinHeight(40);
         buttonMenu.setMaxHeight(40);
+
         return buttonMenu;
+
     }
 
     private GridPane getGridPane() {
@@ -473,21 +702,25 @@ public class TrackModelGUI {
     }
 
     private GridPane getLayoutPane() {
+
         GridPane trackLayout = new GridPane();
+
         trackLayout.setAlignment(Pos.TOP_LEFT);
         trackLayout.setMinHeight((windowHeight/2)-70);
         trackLayout.setMaxHeight((windowHeight/2)-70);
         trackLayout.setMinWidth(windowWidth);
         trackLayout.setMaxWidth(windowWidth);
+
         return trackLayout;
+
     }
 
-    private FlowPane getSwitchInfoPane(double height, double width, ImageView switchIcon, Switch aSwitch) {
+    private FlowPane getSwitchInfoPane(double height, double width, Switch aSwitch) {
 
         FlowPane switchInfra = new FlowPane();
 
-        switchInfra.setMaxHeight((height/6)-4);
-        switchInfra.setMinHeight((height/6)-4);
+        switchInfra.setMaxHeight((height/5)-4);
+        switchInfra.setMinHeight((height/5)-4);
         switchInfra.setMaxWidth(width);
         switchInfra.setMinWidth(width);
         switchInfra.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
@@ -498,8 +731,7 @@ public class TrackModelGUI {
         GridPane switchLabels = new GridPane();
         switchLabels.setAlignment(Pos.CENTER_LEFT);
 
-
-        Label switchData = new Label("Switch: " + aSwitch.getSwitchInfo());
+        Label switchData = new Label("Switch: " + aSwitch.getSwitchNumber());
         Label switchStatusData = new Label("Status: " + aSwitch.getState());
         Label switchConnectData = new Label("Main: " + aSwitch.getMain() + " | Top: " + aSwitch.getTop() + " | Bottom: " + aSwitch.getBottom());
 
@@ -518,7 +750,7 @@ public class TrackModelGUI {
 
     }
 
-    private FlowPane getStationInfoPane(double height, double width, ImageView stationIcon, Station station) {
+    private FlowPane getStationInfoPane(double height, double width, Station station) {
 
         FlowPane stationInfra = new FlowPane();
 
@@ -549,7 +781,7 @@ public class TrackModelGUI {
         return stationInfra;
     }
 
-    private FlowPane getCrossingInfoPane(double height, double width, ImageView crossingIcon, Crossing crossing) {
+    private FlowPane getCrossingInfoPane(double height, double width, Crossing crossing) {
 
         FlowPane crossingInfra = new FlowPane();
 
@@ -592,7 +824,7 @@ public class TrackModelGUI {
 
     }
 
-    private FlowPane getBlockInfoPane(Block selectedBlock, double windowWidth) {
+    private FlowPane getBlockInfoPane(double windowWidth) {
 
         FlowPane blockInfoPanel = new FlowPane();
 
