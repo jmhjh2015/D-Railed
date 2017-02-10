@@ -1,185 +1,94 @@
 package MBO.java;
 
-<<<<<<< HEAD
-import TrackModel.UI.TrackModelGUI;
-import TrainController.TrainController;
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.stage.Stage;
-
-import java.io.IOException;
-
-public class Main extends Application {
-    //Class strings
-    private String applicationTitle = "D-Railed";
-
-    //Class integers
-    private int windowWidth = 300;
-    private int windowHight = 300;
-    private int inset = 25;
-    private int colWidth = 75;
-
-    @Override
-    public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        primaryStage.setTitle(applicationTitle);
-
-        GridPane grid = new GridPane();
-        grid.setAlignment(Pos.CENTER);
-        grid.setPadding(new Insets(inset, inset, inset, inset));
-        //grid.setHgap(10);
-        grid.setVgap(10);
-
-		final Button ctcBtn = new Button("CTC");
-		ctcBtn.setMinWidth(150);
-		HBox hCtcBtn = new HBox(10);
-		hCtcBtn.setAlignment(Pos.CENTER);
-		hCtcBtn.getChildren().add(ctcBtn);
-		hCtcBtn.setMinWidth(150);
-		grid.add(hCtcBtn, 0, 0);
-
-		final Button trackControllerBtn = new Button("Track Controller");
-		trackControllerBtn.setMinWidth(150);
-		HBox hTrackControllerBtn = new HBox(10);
-		hTrackControllerBtn.setAlignment(Pos.CENTER);
-		hTrackControllerBtn.getChildren().add(trackControllerBtn);
-		hTrackControllerBtn.setMinWidth(150);
-		grid.add(hTrackControllerBtn, 0, 1);
-
-		final Button trackModelBtn = new Button("Track Model");
-		trackModelBtn.setMinWidth(150);
-		HBox hTrackModelBtn = new HBox(10);
-		hTrackModelBtn.setAlignment(Pos.CENTER);
-		hTrackModelBtn.getChildren().add(trackModelBtn);
-		hTrackModelBtn.setMinWidth(150);
-		grid.add(hTrackModelBtn, 0, 2);
-
-		final Button trainModelBtn = new Button("Train Model");
-		trainModelBtn.setMinWidth(150);
-		HBox hTrainModelBtn = new HBox(10);
-		hTrainModelBtn.setAlignment(Pos.CENTER);
-		hTrainModelBtn.getChildren().add(trainModelBtn);
-		hTrainModelBtn.setMinWidth(150);
-		grid.add(hTrainModelBtn, 0, 3);
-
-        final Button trainControllerBtn = new Button("Train Controller");
-		trainControllerBtn.setMinWidth(150);
-        HBox hTrainControllerBtn = new HBox(10);
-        hTrainControllerBtn.setAlignment(Pos.CENTER);
-        hTrainControllerBtn.getChildren().add(trainControllerBtn);
-        hTrainControllerBtn.setMinWidth(150);
-        grid.add(hTrainControllerBtn, 0, 4);
-
-		final Button mboBtn = new Button("MBO");
-		mboBtn.setMinWidth(150);
-		HBox hMboBtn = new HBox(10);
-		hMboBtn.setAlignment(Pos.CENTER);
-		hMboBtn.getChildren().add(mboBtn);
-		hMboBtn.setMinWidth(150);
-		grid.add(hMboBtn, 0, 5);
-
-		Scene scene = new Scene(grid, windowWidth, windowHight);
-		primaryStage.setScene(scene);
-		primaryStage.show();
-
-        //handle button press
-		ctcBtn.setOnAction((ActionEvent e) ->
-		{
-			try {
-				TrainController trainController = new TrainController();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-		});
-
-		trackControllerBtn.setOnAction((ActionEvent e) ->
-		{
-			try {
-				TrainController trainController = new TrainController();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-		});
-
-        trackModelBtn.setOnAction((ActionEvent e) ->
-        {
-			try {
-				TrackModelGUI tmg = new TrackModelGUI();
-			} catch (IOException e1) {
-				System.out.println("TRACKMODELERROR:" + e1.getMessage());
-			}
-		});
-
-		trainModelBtn.setOnAction((ActionEvent e) ->
-		{
-			try {
-				TrainController trainController = new TrainController();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-		});
-
-		trainControllerBtn.setOnAction((ActionEvent e) ->
-		{
-			try {
-				TrainController trainController = new TrainController();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-		});
-
-		mboBtn.setOnAction((ActionEvent e) ->
-		{
-			try {
-				TrainController trainController = new TrainController();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-		});
-    }
-
-
-
-
-
-
-=======
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.stage.FileChooser;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import java.io.File;
+
 public class MBOController extends Application {
-
-    @Override
-    public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("../UI/MBOUI.fxml"));
-
-        Screen mainScreen = Screen.getPrimary();
-        Rectangle2D screenBounds = mainScreen.getVisualBounds();
+	private Stage primary;
 
 
-        primaryStage.setTitle("MBO Interface");
-        primaryStage.setScene(new Scene(root, screenBounds.getWidth(), screenBounds.getHeight()));
+	// TRAIN INFO TAB
+	private Button trainScheduleButton;
+	private ToggleButton mboToggle;
+	private TableView trainTable;
 
-        primaryStage.setFullScreen(true);
-        primaryStage.show();
-    }
+	// TRAIN SCHEDULE DISPLAY TAB
+	private TableView stationsTable;
+
+	// WORKER SCHEDULE DISPLAY TAB
+	private Button workerScheduleButton;
+	private TableView workerTable;
+
+	// PLANNER TAB
+	private TextField passengerInput;
+	private TextField conductorInput;
+	private Button submitButton;
+
+	// MURPHY TAB
+	private ToggleButton murphyButton;
 
 
->>>>>>> master
-    public static void main(String[] args) {
-        launch(args);
-    }
+	// MUTATORS
+	public void setTrainInfo(){ }
+
+	/*
+	* Method in charge of setting up gettting the elements associated with the portions
+	* of the UI that have actions associated with them.
+	*-----
+	* No inputs
+	*-----
+	* No returns
+	*/
+	private void getUIElements(){
+		trainScheduleButton = (Button) primary.getScene().lookup("#schedule_btn");
+		mboToggle = (ToggleButton) primary.getScene().lookup("#mbo_toggle");
+		trainTable = (TableView) primary.getScene().lookup("#train_info_table");
+
+		stationsTable = (TableView) primary.getScene().lookup("#scheudle_table");
+
+		workerScheduleButton = (Button) primary.getScene().lookup("#worker_schedule_btn");
+		workerTable = (TableView) primary.getScene().lookup("#worker_schedule_table");
+
+		passengerInput = (TextField) primary.getScene().lookup("#passengers");
+		conductorInput = (TextField) primary.getScene().lookup("#conductors");
+		submitButton = (Button) primary.getScene().lookup("#plan_btn");
+
+		murphyButton = (ToggleButton) primary.getScene().lookup("#mbo_murphy_toggle");
+	}
+
+	// Button Actions
+
+
+
+	@Override
+	public void start(Stage primaryStage) throws Exception{
+		Parent root = FXMLLoader.load(getClass().getResource("../UI/MBOUI.fxml"));          // Gets
+
+		Screen mainScreen = Screen.getPrimary();
+		Rectangle2D screenBounds = mainScreen.getVisualBounds();
+		primary = primaryStage;
+
+		primary.setTitle("MBO Interface");
+		primary.setScene(new Scene(root, screenBounds.getWidth(), screenBounds.getHeight()));
+
+		primary.show();
+
+		this.getUIElements();
+	}
+
+	public static void main(String[] args) {
+		launch(args);
+	}
 }

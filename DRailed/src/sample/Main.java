@@ -1,6 +1,5 @@
 package sample;
 
-import MBO.java.MBOController;
 import TrainController.TrainController;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -14,11 +13,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import TrainController.TrainController;
-<<<<<<< HEAD
 import TrackController.TrackController;
-=======
 import TrainModel.TrainModel;
->>>>>>> master
+import MBO.java.MBOController;
 
 import java.io.IOException;
 
@@ -34,7 +31,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle(applicationTitle);
 
         GridPane grid = new GridPane();
