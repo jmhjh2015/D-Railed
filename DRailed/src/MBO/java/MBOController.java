@@ -1,4 +1,4 @@
-package sample;
+package MBO.java;
 
 <<<<<<< HEAD
 import TrackModel.UI.TrackModelGUI;
@@ -160,11 +160,11 @@ import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-public class Main extends Application {
+public class MBOController extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("MBOUI.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("../UI/MBOUI.fxml"));
 
         Screen mainScreen = Screen.getPrimary();
         Rectangle2D screenBounds = mainScreen.getVisualBounds();

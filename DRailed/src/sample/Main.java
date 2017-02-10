@@ -1,5 +1,7 @@
 package sample;
 
+import MBO.java.MBOController;
+import TrainController.TrainController;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -142,9 +144,10 @@ public class Main extends Application {
 
 		mboBtn.setOnAction((ActionEvent e) ->
 		{
+			MBOController MBO = new MBOController();
 			try {
-				TrainController trainController = new TrainController();
-			} catch (IOException e1) {
+				MBO.start(new Stage());
+			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 		});
