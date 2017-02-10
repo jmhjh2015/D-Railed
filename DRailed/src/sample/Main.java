@@ -14,7 +14,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import TrainController.TrainController;
+<<<<<<< HEAD
+import TrackController.TrackController;
+=======
 import TrainModel.TrainModel;
+>>>>>>> master
 
 import java.io.IOException;
 
@@ -104,7 +108,7 @@ public class Main extends Application {
 		trackControllerBtn.setOnAction((ActionEvent e) ->
 		{
 			try {
-				TrainController trainController = new TrainController();
+				TrackController trackController = new TrackController();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
