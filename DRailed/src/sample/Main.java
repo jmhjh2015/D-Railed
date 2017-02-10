@@ -1,8 +1,5 @@
 package sample;
 
-<<<<<<< HEAD
-import TrackModel.UI.TrackModelGUI;
-import TrainController.TrainController;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -14,6 +11,8 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import TrainController.TrainController;
+import TrainModel.TrainModel;
 
 import java.io.IOException;
 
@@ -111,20 +110,21 @@ public class Main extends Application {
 
         trackModelBtn.setOnAction((ActionEvent e) ->
         {
-			try {
-				TrackModelGUI tmg = new TrackModelGUI();
-			} catch (IOException e1) {
-				System.out.println("TRACKMODELERROR:" + e1.getMessage());
-			}
-		});
+            try {
+                TrainController trainController = new TrainController();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        });
 
 		trainModelBtn.setOnAction((ActionEvent e) ->
 		{
 			try {
-				TrainController trainController = new TrainController();
-			} catch (IOException e1) {
+				TrainModel trainModel = new TrainModel();
+			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
+
 		});
 
 		trainControllerBtn.setOnAction((ActionEvent e) ->
@@ -151,34 +151,6 @@ public class Main extends Application {
 
 
 
-=======
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Screen;
-import javafx.stage.Stage;
-
-public class Main extends Application {
-
-    @Override
-    public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("MBOUI.fxml"));
-
-        Screen mainScreen = Screen.getPrimary();
-        Rectangle2D screenBounds = mainScreen.getVisualBounds();
-
-
-        primaryStage.setTitle("MBO Interface");
-        primaryStage.setScene(new Scene(root, screenBounds.getWidth(), screenBounds.getHeight()));
-
-        primaryStage.setFullScreen(true);
-        primaryStage.show();
-    }
-
-
->>>>>>> master
     public static void main(String[] args) {
         launch(args);
     }
