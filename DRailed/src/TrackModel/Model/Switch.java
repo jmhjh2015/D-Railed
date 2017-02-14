@@ -118,9 +118,10 @@ public class Switch {
         {
             this.topBlock = connectingBlock;
         }
-        else
+        else if(this.bottomBlock == null)
         {
             this.bottomBlock = connectingBlock;
+            System.out.println("BottomHIT" + this.getMain());
         }
     }
 

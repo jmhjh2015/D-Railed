@@ -4,6 +4,7 @@ package TrackModel.UI;
  * Created by andrew on 1/21/17.
  */
 
+import MBO.java.Train;
 import TrackModel.Model.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -16,6 +17,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -28,6 +31,10 @@ import java.util.List;
 public class TrackModelGUI {
 
     //UI Constants
+    private String RED_TEXT = "#bf140a";
+    private String GREEN_TEXT = "#01bd37";
+    private String BLUE_TEXT = "#050dff";
+    private String BLACK_TEXT = "#000000";
     private final String applicationTitle = "Track Model";
     private final Stage stage = new Stage();
     private Scene scene;
@@ -39,7 +46,6 @@ public class TrackModelGUI {
     // Model Structures
     private Block selectedBlock = new Block();
     private TrackModel track = new TrackModel();
-    private Label blockInfoLabel = null;
 
     // Main Grid
     private GridPane mainGrid = getGridPane();
@@ -81,10 +87,8 @@ public class TrackModelGUI {
         buttonMenuLayout = getButtonMenu();
 
         // Button Info Section
-        blockInfoLabel = getBlockInfoLabel();
-        FlowPane blockInfoPanel = getBlockInfoPane(blockInfo.getMinWidth());
-        VBox metricBox = getMetricBox(blockInfoPanel);
-        blockMonitorLayout.add(metricBox, 0, 0);
+        blockInfo = getBlockInfoPane();
+        blockMonitorLayout.add(blockInfo, 0, 0);
 
         ///////////////////////////////////////////////
         // Block Infrastructure Segment              //
@@ -92,6 +96,8 @@ public class TrackModelGUI {
 
         Label blockInfraLabel = new Label("Block Infrastructure: ");
         blockInfraLabel.setTextAlignment(TextAlignment.LEFT);
+        blockInfraLabel.setFont(Font.font(blockInfraLabel.getFont().getFamily(), FontWeight.BOLD, blockInfraLabel.getFont().getSize()+5));
+
 
         blockInfra.setMinHeight(windowHeight/2);
         blockInfra.setMaxHeight(windowHeight/2);
@@ -104,8 +110,8 @@ public class TrackModelGUI {
         FlowPane crossingInfra = null;
         FlowPane lightsInfra = null;
 
-        //Train train = selectedBlock.getTrain();
-        //if(train != null)
+        Train train = selectedBlock.getTrain();
+        if(train != null)
             trainInfra = getTrainInfoPane();
 
         Switch dispSwitch = selectedBlock.getSwitch();
@@ -132,6 +138,7 @@ public class TrackModelGUI {
         ///////////////////////////////////////////////
 
         Label blockStatusLabel = new Label("Block Status: ");
+        blockStatusLabel.setFont(Font.font(blockStatusLabel.getFont().getFamily(), FontWeight.BOLD, blockStatusLabel.getFont().getSize()+5));
 
         blockStatus.setMinHeight(windowHeight/2);
         blockStatus.setMaxHeight(windowHeight/2);
@@ -200,7 +207,6 @@ public class TrackModelGUI {
         lightsInfra.setMinHeight((blockInfra.getMinHeight()/6)-3);
         lightsInfra.setMaxWidth(blockInfra.getMinWidth());
         lightsInfra.setMinWidth(blockInfra.getMaxWidth());
-        lightsInfra.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
 
         lightsIcon.setFitHeight(lightsInfra.getMaxHeight());
         lightsIcon.setFitWidth(50);
@@ -208,9 +214,21 @@ public class TrackModelGUI {
         GridPane lightsLabels = new GridPane();
         lightsLabels.setAlignment(Pos.CENTER_LEFT);
 
-        Label lightsStatus = new Label("Lights Status: ON");
+        Label lightsStatusLabel = new Label("Lights Status: ");
+        lightsStatusLabel.setFont(Font.font(lightsStatusLabel.getFont().getFamily(), FontWeight.BOLD, lightsStatusLabel.getFont().getSize()));
 
-        lightsLabels.add(lightsStatus, 0, 0);
+        Label lightsStatusValue = null;
+
+        if(selectedBlock.getLightStatus()){
+            lightsStatusValue = new Label("GREEN");
+            lightsStatusValue.setTextFill(Color.web(GREEN_TEXT));
+        }else{
+            lightsStatusValue = new Label("RED");
+            lightsStatusValue.setTextFill(Color.web(RED_TEXT));
+        }
+
+        lightsLabels.add(lightsStatusLabel, 0, 0);
+        lightsLabels.add(lightsStatusValue, 1, 0);
         lightsLabels.setPadding(new Insets(0, 0, 0, 10));
 
         lightsInfra.getChildren().add(lightsIcon);
@@ -224,16 +242,22 @@ public class TrackModelGUI {
         trainInfra.setMinHeight((blockInfra.getMinHeight()/6)-4);
         trainInfra.setMaxWidth(blockInfra.getMinWidth());
         trainInfra.setMinWidth(blockInfra.getMaxWidth());
-        trainInfra.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
 
         GridPane trainLabels = new GridPane();
         trainLabels.setAlignment(Pos.CENTER_LEFT);
 
-        Label trainData = new Label("Train: 14");
-        Label trainLoad = new Label("Capacity: 222 | Unloading: 40");
+        Label trainLabel = new Label("Train: ");
+        Label trainValue = new Label("" + selectedBlock.getTrain().getId());
+        trainLabel.setFont(Font.font(trainLabel.getFont().getFamily(), FontWeight.BOLD, trainLabel.getFont().getSize()));
 
-        trainLabels.add(trainData, 0, 0);
-        trainLabels.add(trainLoad, 0, 1);
+        Label trainLoadLabel = new Label("Unloading: ");
+        Label trainLoadValue = new Label("" + selectedBlock.getTrain().getUnloading());
+        trainLoadLabel.setFont(Font.font(trainLoadLabel.getFont().getFamily(), FontWeight.BOLD, trainLoadLabel.getFont().getSize()));
+
+        trainLabels.add(trainLabel, 0, 0);
+        trainLabels.add(trainValue, 1, 0);
+        trainLabels.add(trainLoadLabel, 0, 1);
+        trainLabels.add(trainLoadValue, 1, 1);
         trainLabels.setPadding(new Insets(0,0,0,10));
 
         trainIcon.setFitHeight(trainInfra.getMaxHeight());
@@ -279,7 +303,6 @@ public class TrackModelGUI {
         powerStatus.setMinHeight((blockInfra.getMinHeight()/5)-4);
         powerStatus.setMaxWidth(blockInfra.getMinWidth());
         powerStatus.setMinWidth(blockInfra.getMaxWidth());
-        powerStatus.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
 
         powerIcon.setFitHeight(powerStatus.getMaxHeight());
         powerIcon.setFitWidth(50);
@@ -287,14 +310,21 @@ public class TrackModelGUI {
         GridPane powerLabels = new GridPane();
         powerLabels.setAlignment(Pos.CENTER_LEFT);
 
-        Label powerStatusLabel = null;
+        Label powerStatusLabel = new Label("Power Status: ");
+        powerStatusLabel.setFont(Font.font(powerStatusLabel.getFont().getFamily(), FontWeight.BOLD, powerStatusLabel.getFont().getSize()));
+
+        Label powerStatusValue = null;
+
         if(selectedBlock.isPowerState()) {
-            powerStatusLabel = new Label("Power Status: Good");
+            powerStatusValue = new Label("Good");
+            powerStatusValue.setTextFill(Color.web(GREEN_TEXT));
         }else{
-            powerStatusLabel = new Label("Power Status: Failing");
+            powerStatusValue = new Label("Failing");
+            powerStatusValue.setTextFill(Color.web(RED_TEXT));
         }
 
         powerLabels.add(powerStatusLabel, 0, 0);
+        powerLabels.add(powerStatusValue, 1, 0);
         powerLabels.setPadding(new Insets(0,0,0,10));
 
         powerStatus.getChildren().add(powerIcon);
@@ -308,7 +338,6 @@ public class TrackModelGUI {
         circuitStatus.setMinHeight((blockInfra.getMinHeight()/5)-4);
         circuitStatus.setMaxWidth(blockInfra.getMinWidth());
         circuitStatus.setMinWidth(blockInfra.getMaxWidth());
-        circuitStatus.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
 
         circuitIcon.setFitHeight(circuitStatus.getMaxHeight());
         circuitIcon.setFitWidth(50);
@@ -316,14 +345,21 @@ public class TrackModelGUI {
         GridPane circuitLabels = new GridPane();
         circuitLabels.setAlignment(Pos.CENTER_LEFT);
 
-        Label circuitStatusLabel = null;
+        Label circuitStatusLabel = new Label("Track Circuit Status: ");
+        circuitStatusLabel.setFont(Font.font(circuitStatusLabel.getFont().getFamily(), FontWeight.BOLD, circuitStatusLabel.getFont().getSize()));
+
+        Label circuitStatusValue = null;
+
         if(selectedBlock.isCircuitState()) {
-            circuitStatusLabel = new Label("Track Circuit Status: Good");
+            circuitStatusValue = new Label("Good");
+            circuitStatusValue.setTextFill(Color.web(GREEN_TEXT));
         }else{
-            circuitStatusLabel = new Label("Track Circuit Status: Failing");
+            circuitStatusValue = new Label("Failing");
+            circuitStatusValue.setTextFill(Color.web(RED_TEXT));
         }
 
         circuitLabels.add(circuitStatusLabel, 0, 0);
+        circuitLabels.add(circuitStatusValue, 1, 0);
         circuitLabels.setPadding(new Insets(0,0,0,10));
 
         circuitStatus.getChildren().add(circuitIcon);
@@ -337,7 +373,6 @@ public class TrackModelGUI {
         railStatus.setMinHeight((blockInfra.getMinHeight()/5)-4);
         railStatus.setMaxWidth(blockInfra.getMinWidth());
         railStatus.setMinWidth(blockInfra.getMaxWidth());
-        railStatus.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
 
         railIcon.setFitHeight(railStatus.getMaxHeight());
         railIcon.setFitWidth(50);
@@ -345,14 +380,21 @@ public class TrackModelGUI {
         GridPane railLabels = new GridPane();
         railLabels.setAlignment(Pos.CENTER_LEFT);
 
-        Label railStatusLabel = null;
+        Label railStatusLabel = new Label("Rail Status: ");
+        railStatusLabel.setFont(Font.font(railStatusLabel.getFont().getFamily(), FontWeight.BOLD, railStatusLabel.getFont().getSize()));
+
+        Label railStatusValue = null;
+
         if(selectedBlock.isRailState()) {
-            railStatusLabel = new Label("Rail Status: Good");
+            railStatusValue = new Label("Good");
+            railStatusValue.setTextFill(Color.web(GREEN_TEXT));
         }else{
-            railStatusLabel = new Label("Rail Status: Failing");
+            railStatusValue = new Label("Failing");
+            railStatusValue.setTextFill(Color.web(RED_TEXT));
         }
 
         railLabels.add(railStatusLabel, 0, 0);
+        railLabels.add(railStatusValue, 1, 0);
         railLabels.setPadding(new Insets(0,0,0,10));
 
         railStatus.getChildren().add(railIcon);
@@ -368,7 +410,6 @@ public class TrackModelGUI {
         conditionStatus.setMinHeight((blockInfra.getMinHeight()/5)-4);
         conditionStatus.setMaxWidth(blockInfra.getMinWidth());
         conditionStatus.setMinWidth(blockInfra.getMaxWidth());
-        conditionStatus.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
 
         openIcon.setFitHeight(conditionStatus.getMaxHeight());
         openIcon.setFitWidth(50);
@@ -378,35 +419,32 @@ public class TrackModelGUI {
         GridPane conditionLabels = new GridPane();
         conditionLabels.setAlignment(Pos.CENTER_LEFT);
 
-        Label conditionStatusLabel = new Label("Overall Block Status: " + selectedBlock.getTrackState());
+        Label conditionStatusLabel = new Label("Overall Block Status: ");
+        Label conditionStatusValue = new Label(selectedBlock.getTrackState());
 
+        conditionStatusLabel.setFont(Font.font(conditionStatusLabel.getFont().getFamily(), FontWeight.BOLD, conditionStatusLabel.getFont().getSize()));
         conditionStatusLabel.setPadding(new Insets(0,0,0,10));
         conditionLabels.add(conditionStatusLabel, 0, 0);
         conditionLabels.setPadding(new Insets(0, 0, 0, 10));
 
         if(selectedBlock.getTrackState().contains("OPEN")){
+            conditionStatusValue.setTextFill(Color.web(GREEN_TEXT));
             conditionStatus.getChildren().add(openIcon);
         }else{
+            conditionStatusValue.setTextFill(Color.web(RED_TEXT));
             conditionStatus.getChildren().add(closedIcon);
         }
 
         conditionStatus.getChildren().add(conditionStatusLabel);
+        conditionStatus.getChildren().add(conditionStatusValue);
         return conditionStatus;
-    }
-
-    private Label getBlockInfoLabel() {
-
-        Label blockInfoLabel = new Label("Block Info: Line: " + selectedBlock.getLine() + " | Section: " + selectedBlock.getSection() + " | Block: " + selectedBlock.getBlockNumber());
-        blockInfoLabel.setTextAlignment(TextAlignment.LEFT);
-        blockInfoLabel.setPadding(new Insets(0,0,0,10));
-
-        return blockInfoLabel;
     }
 
     private FlowPane getButtonMenu() {
 
         FlowPane menu = new FlowPane();
         menu.setAlignment(Pos.CENTER);
+        menu.setPadding(new Insets(5,0,5,0));
 
         FileChooser fileChooser = new FileChooser();
         Stage fileSelect = new Stage();
@@ -425,23 +463,9 @@ public class TrackModelGUI {
                 if(file != null)
                 {
                     track.importTrack(file.getAbsolutePath());
-                    ScrollPane scrollPane = parseTrackForDisplay();
-                    trackLayout.add(scrollPane, 0, 0);
-                }
-            }
-        });
 
-        Button infraOver = new Button("Infrastructure Override");
-        infraOver.setMinHeight(30);
-        infraOver.setMaxHeight(30);
+                    track.randomDispatch(track.getLines().get(track.getLineCount()-1).getLine());
 
-        // import a track and modify the track layout
-        importTrack.setOnAction(new EventHandler<ActionEvent>(){
-            public void handle(ActionEvent e){
-                File file = fileChooser.showOpenDialog(fileSelect);
-                if(file != null)
-                {
-                    track.importTrack(file.getAbsolutePath());
                     ScrollPane scrollPane = parseTrackForDisplay();
                     trackLayout.add(scrollPane, 0, 0);
                 }
@@ -473,7 +497,7 @@ public class TrackModelGUI {
                 Label todo = new Label("Select systems to simulate track state:");
                 todo.setPadding(new Insets(10));
 
-                Label currentBlock = new Label("Line: " + selectedBlock.getLine() + "Section: " + selectedBlock.getSection() +  "Block: " + selectedBlock.getBlockNumber());
+                Label currentBlock = new Label("Line: " + selectedBlock.getLine() + " Section: " + selectedBlock.getSection() +  " Block: " + selectedBlock.getBlockNumber());
                 currentBlock.setPadding(new Insets(10));
 
                 CheckBox condButton = new CheckBox("Close Track");
@@ -529,7 +553,7 @@ public class TrackModelGUI {
             }
         });
 
-        menu.getChildren().addAll(importTrack, infraOver, murphyCtrl);
+        menu.getChildren().addAll(importTrack, murphyCtrl);
         return menu;
     }
 
@@ -556,6 +580,9 @@ public class TrackModelGUI {
                     blockButton.setMinWidth(windowWidth);
                     blockButton.setAlignment(Pos.CENTER_LEFT);
                     blockButton.setTextAlignment(TextAlignment.LEFT);
+                    if(block.hasTrain()) {
+                        blockButton.setTextFill(Color.web(BLUE_TEXT));
+                    }
                     blockButton.setOnAction((event) -> {
                         selectedBlock = block;
                         updateBlockMonitor();
@@ -584,6 +611,7 @@ public class TrackModelGUI {
     private void updateBlockInfrastructure() {
         Label blockInfraLabel = new Label("Block Infrastructure: ");
         blockInfraLabel.setTextAlignment(TextAlignment.LEFT);
+        blockInfraLabel.setFont(Font.font(blockInfraLabel.getFont().getFamily(), FontWeight.BOLD, blockInfraLabel.getFont().getSize()+5));
 
         blockInfra.getChildren().removeAll();
 
@@ -598,8 +626,8 @@ public class TrackModelGUI {
         FlowPane crossingInfra = null;
         FlowPane lightsInfra = null;
 
-        //Train train = selectedBlock.getTrain();
-        //if(train != null)
+        Train train = selectedBlock.getTrain();
+        if(train != null)
             trainInfra = getTrainInfoPane();
 
         Switch dispSwitch = selectedBlock.getSwitch();
@@ -627,6 +655,7 @@ public class TrackModelGUI {
     private void updateBlockStatus() {
 
         Label blockStatusLabel = new Label("Block Status: ");
+        blockStatusLabel.setFont(Font.font(blockStatusLabel.getFont().getFamily(), FontWeight.BOLD, blockStatusLabel.getFont().getSize()+5));
 
         FlowPane conditionStatus = getConditionStatusPane();
         FlowPane railStatus = getRailStatusPane();
@@ -642,18 +671,17 @@ public class TrackModelGUI {
 
     private void updateBlockInfoView() {
 
-        blockInfoLabel = new Label("Block Info: Line: " + selectedBlock.getLine() + " | Section: " + selectedBlock.getSection() + " | Block: " + selectedBlock.getBlockNumber());
-
-        FlowPane blockInfoPanel = getBlockInfoPane(blockInfo.getMinWidth());
-        VBox metricBox = getMetricBox(blockInfoPanel);
+        blockInfo = getBlockInfoPane();
 
         blockMonitorLayout.getChildren().remove(0);
-        blockMonitorLayout.getChildren().add(0, metricBox);
+        blockMonitorLayout.getChildren().add(0, blockInfo);
+
     }
 
     private Label getLayoutLabel() {
 
         Label layoutMenuTitle = new Label("TrackLayoutMenu");
+        layoutMenuTitle.setFont(Font.font(layoutMenuTitle.getFont().getFamily(), FontWeight.BOLD, layoutMenuTitle.getFont().getSize()));
 
         layoutMenuTitle.setPadding(new Insets(0,0,0,10));
         layoutMenuTitle.setTextAlignment(TextAlignment.LEFT);
@@ -663,21 +691,6 @@ public class TrackModelGUI {
         layoutMenuTitle.setAlignment(Pos.CENTER_LEFT);
 
         return layoutMenuTitle;
-    }
-
-    private GridPane getBlockInfoPane() {
-
-        GridPane blockInfo = new GridPane();
-
-        blockInfo.setAlignment(Pos.TOP_LEFT);
-        blockInfo.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
-        blockInfo.setMinHeight(windowHeight/2);
-        blockInfo.setMaxHeight(windowHeight/2);
-        blockInfo.setMinWidth(windowWidth/3);
-        blockInfo.setMaxWidth(windowWidth/3);
-
-        return blockInfo;
-
     }
 
     private FlowPane getButtonMenuLayoutPane() {
@@ -723,25 +736,57 @@ public class TrackModelGUI {
         switchInfra.setMinHeight((height/5)-4);
         switchInfra.setMaxWidth(width);
         switchInfra.setMinWidth(width);
-        switchInfra.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
 
         switchIcon.setFitHeight(switchInfra.getMaxHeight());
-        switchIcon.setFitWidth(50);
+        switchIcon.setFitWidth(40);
 
         GridPane switchLabels = new GridPane();
         switchLabels.setAlignment(Pos.CENTER_LEFT);
 
-        Label switchData = new Label("Switch: " + aSwitch.getSwitchNumber());
-        Label switchStatusData = new Label("Status: " + aSwitch.getState());
-        Label switchConnectData = new Label("Main: " + aSwitch.getMain() + " | Top: " + aSwitch.getTop() + " | Bottom: " + aSwitch.getBottom());
+        Label switchLabel = new Label("Switch: ");
+        switchLabel.setFont(Font.font(switchLabel.getFont().getFamily(), FontWeight.BOLD, switchLabel.getFont().getSize()));
 
-        switchLabels.add(switchData, 0, 0);
-        switchLabels.add(switchStatusData, 0, 1);
-        switchLabels.add(switchConnectData, 0, 2);
+        Label switchValue = null;
 
-        switchData.setPadding(new Insets(0, 0, 0, 10));
-        switchStatusData.setPadding(new Insets(0, 0, 0, 10));
-        switchConnectData.setPadding(new Insets(0, 0, 0, 10));
+        if(selectedBlock.getBlockNumber().equals(aSwitch.getMain())) {
+            switchValue = new Label(aSwitch.getSwitchNumber() + " [M]");
+        }else if(selectedBlock.getBlockNumber().equals(aSwitch.getTop())){
+            switchValue = new Label(aSwitch.getSwitchNumber() + " [T]");
+        }else{
+            switchValue = new Label(aSwitch.getSwitchNumber() + " [B]");
+        }
+
+        Label switchStatusLabel = new Label("Status: ");
+        switchStatusLabel.setFont(Font.font(switchLabel.getFont().getFamily(), FontWeight.BOLD, switchLabel.getFont().getSize()));
+        Label switchStatusValue = new Label("" + aSwitch.getState());
+
+        Label switchConnectMain = new Label("Main: ");
+        switchConnectMain.setFont(Font.font(switchLabel.getFont().getFamily(), FontWeight.BOLD, switchLabel.getFont().getSize()));
+        Label switchMainValue = new Label("" + aSwitch.getMain());
+
+        Label switchConnectTop = new Label("Top: ");
+        switchConnectTop.setFont(Font.font(switchLabel.getFont().getFamily(), FontWeight.BOLD, switchLabel.getFont().getSize()));
+        Label switchTopValue = new Label("" +aSwitch.getTop());
+
+        Label switchConnectBottom = new Label("Bottom: ");
+        switchConnectBottom.setFont(Font.font(switchLabel.getFont().getFamily(), FontWeight.BOLD, switchLabel.getFont().getSize()));
+        Label switchBottomValue = new Label("" + aSwitch.getBottom());
+
+        switchLabel.setPadding(new Insets(0,0,0,10));
+        switchStatusLabel.setPadding(new Insets(0,0,0,10));
+        switchValue.setPadding(new Insets(0,10,0,5));
+        switchStatusValue.setPadding(new Insets(0,10,0,5));
+
+        switchLabels.add(switchLabel, 0, 0);
+        switchLabels.add(switchValue, 1, 0);
+        switchLabels.add(switchStatusLabel, 0, 1);
+        switchLabels.add(switchStatusValue,1,1);
+        switchLabels.add(switchConnectMain, 2, 0);
+        switchLabels.add(switchMainValue,3,0);
+        switchLabels.add(switchConnectTop, 2,1);
+        switchLabels.add(switchTopValue, 3, 1);
+        switchLabels.add(switchConnectBottom, 2,2);
+        switchLabels.add(switchBottomValue, 3,2);
 
         switchInfra.getChildren().add(switchIcon);
         switchInfra.getChildren().add(switchLabels);
@@ -758,7 +803,6 @@ public class TrackModelGUI {
         stationInfra.setMinHeight((height / 6) - 4);
         stationInfra.setMaxWidth(width);
         stationInfra.setMinWidth(width);
-        stationInfra.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
 
         stationIcon.setFitHeight(stationInfra.getMaxHeight());
         stationIcon.setFitWidth(50);
@@ -766,14 +810,21 @@ public class TrackModelGUI {
         GridPane stationLabels = new GridPane();
         stationLabels.setAlignment(Pos.CENTER_LEFT);
 
-        Label stationData = new Label("Station: " + station.getStationName());
-        Label stationOccupancy = new Label("Occupancy: " + station.getOccupancy() + " | Departing: " + station.getDeparting());
+        Label stationLabel = new Label("Station: ");
+        stationLabel.setFont(Font.font(stationLabel.getFont().getFamily(), FontWeight.BOLD, stationLabel.getFont().getSize()));
+        Label stationValue = new Label(station.getStationName());
 
-        stationLabels.add(stationData, 0, 0);
-        stationLabels.add(stationOccupancy, 0, 1);
+        Label stationOccupancyLabel = new Label("Departing: ");
+        stationOccupancyLabel.setFont(Font.font(stationOccupancyLabel.getFont().getFamily(), FontWeight.BOLD, stationOccupancyLabel.getFont().getSize()));
+        Label stationOccupancy = new Label("" + station.getDeparting());
 
-        stationData.setPadding(new Insets(0, 0, 0, 10));
-        stationOccupancy.setPadding(new Insets(0, 0, 0, 10));
+        stationLabels.add(stationLabel, 0, 0);
+        stationLabels.add(stationValue, 1, 0);
+        stationLabels.add(stationOccupancyLabel, 0, 1);
+        stationLabels.add(stationOccupancy, 1, 1);
+
+        stationLabel.setPadding(new Insets(0, 0, 0, 10));
+        stationOccupancyLabel.setPadding(new Insets(0, 0, 0, 10));
 
         stationInfra.getChildren().add(stationIcon);
         stationInfra.getChildren().add(stationLabels);
@@ -789,7 +840,6 @@ public class TrackModelGUI {
         crossingInfra.setMinHeight((height / 6) - 4);
         crossingInfra.setMaxWidth(width);
         crossingInfra.setMinWidth(width);
-        crossingInfra.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
 
         crossingIcon.setFitHeight(crossingInfra.getMaxHeight());
         crossingIcon.setFitWidth(50);
@@ -797,9 +847,19 @@ public class TrackModelGUI {
         GridPane crossingLabels = new GridPane();
         crossingLabels.setAlignment(Pos.CENTER_LEFT);
 
-        Label crossingStatus = new Label("Crossroad Status: " + crossing.isActive());
+        Label crossingStatusLabel = new Label("Crossroad Status: ");
+        Label crossingStatus = null;
 
-        crossingLabels.add(crossingStatus, 0, 0);
+        if(crossing != null && crossing.isActive()){
+            crossingStatus = new Label("ACTIVE");
+            crossingStatus.setTextFill(Color.web(GREEN_TEXT));
+        }else{
+            crossingStatus = new Label("INACTIVE");
+            crossingStatus.setTextFill(Color.web(BLUE_TEXT));
+        }
+
+        crossingLabels.add(crossingStatusLabel, 0, 0);
+        crossingLabels.add(crossingStatus, 1, 0);
         crossingLabels.setPadding(new Insets(0, 0, 0, 10));
 
         crossingInfra.getChildren().add(crossingIcon);
@@ -808,55 +868,102 @@ public class TrackModelGUI {
         return crossingInfra;
     }
 
-    private VBox getMetricBox(FlowPane infoPanel) {
+    private GridPane getBlockInfoPane() {
 
-        VBox metricBox = new VBox();
-        metricBox.setSpacing(5);
-        metricBox.setPadding(new Insets(0, 0, 0, 0));
-        metricBox.setMaxWidth(windowWidth/3);
-        metricBox.setMinWidth(windowWidth/3);
-        metricBox.setMaxHeight(windowHeight/2);
-        metricBox.setMinHeight(windowHeight/2);
+        GridPane blockInfoPanel = new GridPane();
 
-        metricBox.getChildren().addAll(blockInfoLabel, infoPanel);
+        Label blockInfoLabel = new Label("Block Info:");
+            blockInfoLabel.setPadding(new Insets(0,0,20,10));
+            blockInfoLabel.setFont(Font.font(blockInfoLabel.getFont().getFamily(), FontWeight.BOLD, blockInfoLabel.getFont().getSize()+5));
 
-        return metricBox;
+        Label blockLineLabel = new Label( "Line: ");
+        Label blockLineValue = new Label("" + selectedBlock.getLine());
+            blockLineLabel.setPadding(new Insets(0,0,0,10));
+            blockLineLabel.setFont(Font.font(blockLineLabel.getFont().getFamily(), FontWeight.BOLD, blockLineLabel.getFont().getSize()));
+            blockLineValue.setPadding(new Insets(0,0,0,10));
 
-    }
+        Label blockSectionLabel = new Label("Section: ");
+        Label blockSectionValue = new Label("" + selectedBlock.getSection());
+            blockSectionLabel.setPadding(new Insets(0,0,0,10));
+            blockSectionLabel.setFont(Font.font(blockLineLabel.getFont().getFamily(), FontWeight.BOLD, blockLineLabel.getFont().getSize()));
+            blockSectionValue.setPadding(new Insets(0,0,0,10));
 
-    private FlowPane getBlockInfoPane(double windowWidth) {
+        Label blockLabel = new Label("Block: ");
+        Label blockValue = new Label("" + selectedBlock.getBlockNumber());
+            blockLabel.setPadding(new Insets(0,0,20,10));
+            blockLabel.setFont(Font.font(blockLineLabel.getFont().getFamily(), FontWeight.BOLD, blockLineLabel.getFont().getSize()));
+            blockValue.setPadding(new Insets(0,0,20,10));
 
-        FlowPane blockInfoPanel = new FlowPane();
-
-        Label length = new Label("Length (m): " + selectedBlock.getLength());
-            length.setMinWidth(windowWidth);
+        Label length = new Label("Length (m): ");
+        Label lengthValue = new Label("" + selectedBlock.getLength());
             length.setPadding(new Insets(0,0,0,10));
+            length.setFont(Font.font(blockLineLabel.getFont().getFamily(), FontWeight.BOLD, blockLineLabel.getFont().getSize()));
+            lengthValue.setPadding(new Insets(0,0,0,10));
 
-        Label speedLimit = new Label("Speed Limit (mph): " + selectedBlock.getSpeedLimit());
-            speedLimit.setMinWidth(windowWidth);
+        Label speedLimit = new Label("Speed Limit (mph): ");
+        Label speedLimitValue = new Label("" + selectedBlock.getSpeedLimit());
             speedLimit.setPadding(new Insets(0,0,0,10));
+            speedLimit.setFont(Font.font(blockLineLabel.getFont().getFamily(), FontWeight.BOLD, blockLineLabel.getFont().getSize()));
+            speedLimitValue.setPadding(new Insets(0,0,0,10));
 
-        Label grade = new Label("Grade (%): " + selectedBlock.getGrade());
-            grade.setMinWidth(windowWidth);
+        Label grade = new Label("Grade (%): ");
+        Label gradeValue = new Label("" + selectedBlock.getGrade());
             grade.setPadding(new Insets(0,0,0,10));
+            grade.setFont(Font.font(blockLineLabel.getFont().getFamily(), FontWeight.BOLD, blockLineLabel.getFont().getSize()));
+            gradeValue.setPadding(new Insets(0,0,0,10));
 
-        Label elevation = new Label("Elevation (m): " + selectedBlock.getElevation());
-            elevation.setMinWidth(windowWidth);
+        Label elevation = new Label("Elevation (m): ");
+        Label elevationValue = new Label("" + selectedBlock.getElevation());
             elevation.setPadding(new Insets(0,0,0,10));
+            elevation.setFont(Font.font(blockLineLabel.getFont().getFamily(), FontWeight.BOLD, blockLineLabel.getFont().getSize()));
+            elevationValue.setPadding(new Insets(0,0,0,10));
 
-        Label cumElevation = new Label("Cumulative Elevation (m): " + selectedBlock.getCumulativeElevation());
-            cumElevation.setMinWidth(windowWidth);
+        Label cumElevation = new Label("Cumulative Elevation (m): ");
+        Label cumElevationValue = new Label("" + selectedBlock.getCumulativeElevation());
             cumElevation.setPadding(new Insets(0,0,0,10));
+            cumElevation.setFont(Font.font(blockLineLabel.getFont().getFamily(), FontWeight.BOLD, blockLineLabel.getFont().getSize()));
+            cumElevationValue.setPadding(new Insets(0,0,0,10));
 
-        Label direction = new Label("Direction: " + selectedBlock.getDirection());
-            direction.setMinWidth(windowWidth);
+        Label direction = new Label("Direction: ");
+        Label directionValue = new Label("" + selectedBlock.getDirection());
             direction.setPadding(new Insets(0,0,0,10));
+            direction.setFont(Font.font(blockLineLabel.getFont().getFamily(), FontWeight.BOLD, blockLineLabel.getFont().getSize()));
+            directionValue.setPadding(new Insets(0,0,0,10));
 
-        Label temperature = new Label("Temperature (F): " + selectedBlock.getTemperature());
-            temperature.setMinWidth(windowWidth);
+        Label temperature = new Label("Temperature (F): ");
+        Label temperatureValue = new Label("" + selectedBlock.getTemperature());
             temperature.setPadding(new Insets(0,0,0,10));
+            temperature.setFont(Font.font(blockLineLabel.getFont().getFamily(), FontWeight.BOLD, blockLineLabel.getFont().getSize()));
+            temperatureValue.setPadding(new Insets(0,0,0,10));
 
-        blockInfoPanel.getChildren().addAll(length, speedLimit, grade, elevation, cumElevation, direction, temperature);
+        blockInfoPanel.setAlignment(Pos.TOP_LEFT);
+        blockInfoPanel.setMinHeight(windowHeight/2);
+        blockInfoPanel.setMaxHeight(windowHeight/2);
+        blockInfoPanel.setMinWidth(windowWidth/3);
+        blockInfoPanel.setMaxWidth(windowWidth/3);
+
+        blockInfoPanel.add(blockInfoLabel, 0, 0);
+        blockInfoPanel.add(blockLineLabel, 0, 1);
+        blockInfoPanel.add(blockLineValue, 1, 1);
+        blockInfoPanel.add(blockSectionLabel, 0, 2);
+        blockInfoPanel.add(blockSectionValue, 1, 2);
+        blockInfoPanel.add(blockLabel, 0, 3);
+        blockInfoPanel.add(blockValue, 1, 3);
+        blockInfoPanel.add(length, 0, 4);
+        blockInfoPanel.add(lengthValue, 1, 4);
+        blockInfoPanel.add(speedLimit, 0, 5);
+        blockInfoPanel.add(speedLimitValue, 1, 5);
+        blockInfoPanel.add(grade, 0, 6);
+        blockInfoPanel.add(gradeValue, 1, 6);
+        blockInfoPanel.add(elevation, 0, 7);
+        blockInfoPanel.add(elevationValue, 1, 7);
+        blockInfoPanel.add(cumElevation, 0, 8);
+        blockInfoPanel.add(cumElevationValue, 1, 8);
+        blockInfoPanel.add(direction, 0, 9);
+        blockInfoPanel.add(directionValue, 1, 9);
+        blockInfoPanel.add(temperature, 0, 10);
+        blockInfoPanel.add(temperatureValue, 1, 10);
+
         return blockInfoPanel;
     }
 

@@ -15,7 +15,7 @@ public class Light {
 
     public Light(String lightId){
         this.lightId = lightId;
-        this.active = false;
+        this.active = true;
     }
 
     public Light(String lightId, boolean status){
