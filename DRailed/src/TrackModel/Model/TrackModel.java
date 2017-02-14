@@ -1,12 +1,11 @@
 package TrackModel.Model;
 
+import MBO.java.Train;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by adzun_000 on 1/17/2017.
@@ -15,10 +14,13 @@ public class TrackModel
 {
 
     private List<Line> lines;
+    private List<Train> trainDispatchList;
+    private int trainToDispatch = 0;
     private int lineCount;
 
     public TrackModel(){
         lines = new ArrayList<>();
+        trainDispatchList = new ArrayList<>();
     }
 
     public List<Line> getLines() {
@@ -171,7 +173,6 @@ public class TrackModel
                     updateSection.addBlock(updateBlock);
 
                 }
-
 
             }
 
@@ -359,4 +360,24 @@ public class TrackModel
     public void setLineCount(int lineCount) {
         this.lineCount = lineCount;
     }
+
+    public void randomDispatch(String line){
+
+        getRandomTrains();
+
+        if(line != null && existsLine(line)) {
+            String secVal = "A";
+            int blockNo = 2;
+
+            System.out.println("Train dispatched to: " + line + ":" + secVal + ":" + blockNo);
+            getLine(line).placeTrain(secVal, blockNo, trainDispatchList.get(trainToDispatch));
+            trainToDispatch++;
+        }
+    }
+
+    private void getRandomTrains(){
+        trainDispatchList.add(new Train(0));
+        trainDispatchList.add(new Train(1));
+    }
+
 }

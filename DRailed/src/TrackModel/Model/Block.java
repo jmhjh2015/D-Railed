@@ -4,6 +4,8 @@ package TrackModel.Model;
  * Created by andrew on 1/17/2017.
  */
 
+import MBO.java.Train;
+
 /***
  * Blocks represent track infrastructure and physical attributes. They serve as pieces and the
  * building "blocks" of the overall track model.
@@ -40,7 +42,7 @@ public class Block {
     private String direction;
 
     // Infrastructure and Functionality
-    String trainData; // this needs to be replaced by the train from the train model (only when a train is present)
+    private Train train;
     private boolean hasTrain;
     private Switch aSwitch;
     private Station station;
@@ -77,10 +79,13 @@ public class Block {
         this.temperature = null;
 
         // infrastructure
+        this.train = null;
         this.aSwitch = null;
         this.crossing = null;
         this.station = null;
         this.light = null;
+
+        this.hasTrain = false;
 
         // status
         this.powerState = false;
@@ -95,10 +100,13 @@ public class Block {
         this.blockNumber = blockNumber;
 
         // infrastructure
+        this.train = null;
         this.aSwitch = null;
         this.crossing = null;
         this.station = null;
         this.light = new Light("" + blockNumber);
+
+        this.hasTrain = false;
 
         // status
         this.powerState = true;
@@ -123,6 +131,24 @@ public class Block {
         this.crossing = crossing;
         this.other = other;
         this.light = new Light("" + this.blockNumber);
+    }
+
+    public void trainEnter(Train newTrain){
+        this.train = newTrain;
+        this.hasTrain = true;
+    }
+
+    public Train getTrain(){
+        return this.train;
+    }
+
+    public void trainExit(){
+        this.train = null;
+        this.hasTrain = false;
+    }
+
+    public boolean hasTrain(){
+        return this.hasTrain;
     }
 
     public Integer getBlockNumber() {

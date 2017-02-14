@@ -1,5 +1,7 @@
 package TrackModel.Model;
 
+import MBO.java.Train;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +19,7 @@ public class Line {
     private int totalLength;
 
     // line component lists
+    private List<Train> trains;
     private List<Section> sections;
     private List<Switch> switches;
     private List<Station> stations;
@@ -28,6 +31,7 @@ public class Line {
 
     public Line(String line){
         this.line = line;
+        trains = new ArrayList<>();
         sections = new ArrayList<>();
         switches = new ArrayList<>();
         stations = new ArrayList<>();
@@ -205,6 +209,27 @@ public class Line {
     public void addCrossing(Crossing crossing){
         crossingCount++;
         this.crossings.add(crossing);
+    }
+
+    public int countSections(){
+        int count = 0;
+        for(Section s : sections)
+            count++;
+
+        return count;
+    }
+
+    public int countBlocks(){
+        int count = 0;
+        for(Section s : sections){
+            count += s.countBlocks();
+        }
+        return count;
+    }
+
+    public void placeTrain(String section, Integer blockNo, Train train){
+        getSection(section).getBlock(blockNo).trainEnter(train);
+        trains.add(train);
     }
 
 }

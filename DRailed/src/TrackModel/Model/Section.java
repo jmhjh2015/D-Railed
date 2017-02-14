@@ -157,6 +157,15 @@ public class Section {
         return blockCount;
     }
 
+    public int countBlocks(){
+        int count = 0;
+
+        for(Block b : blocks)
+            count++;
+
+        return count;
+    }
+
     public void setBlockCount(int blockCount) {
         this.blockCount = blockCount;
     }
