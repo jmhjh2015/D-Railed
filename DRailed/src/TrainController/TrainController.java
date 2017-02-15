@@ -1,9 +1,8 @@
 package TrainController;
 
-import javafx.fxml.FXMLLoader;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -20,22 +19,42 @@ import java.io.IOException;
 public class TrainController {
 	private final Stage stage = new Stage();
 
+	private TextArea notifications;
+
 	//Create Scene
 	private Scene scene;
 
 	//Class strings
-	private String applicationTitle = "Train Controller";
+	private String windowTitle = "Train Controller";
 
 	//Class integers
 	private int windowWidth = 800;
-	private int windowHight = 475;
+	private int windowHight = 500;
 	private int inset = 25;
 	private int colWidth = 75;
+
+	private double kp;
+	private double ki;
+
+	public void MakeAnnouncement(String announcement)
+	{
+		String newNotification;
+		if(notifications.getText().equals("Notifications here"))
+		{
+			newNotification = "";
+		}
+		else
+		{
+			newNotification = notifications.getText();
+		}
+
+		notifications.setText(newNotification + announcement + "\n");
+	}
 
 	public TrainController() throws IOException
 	{
 
-		stage.setTitle(applicationTitle);
+		stage.setTitle(windowTitle);
 
 		GridPane grid = new GridPane();
 		grid.setAlignment(Pos.CENTER);
@@ -171,10 +190,10 @@ public class TrainController {
 		acGrid.setMinWidth(colWidth*2);
 		grid.add(acGrid, 1, 3, 2, 1);
 
-		TextField notifications = new TextField ("Notifications here");
-		notifications.setMinWidth(colWidth*3);
-		notifications.setMinHeight(colWidth*3);
-		notifications.setAlignment(Pos.CENTER);
+		notifications = new TextArea ("Notifications here");
+		notifications.setMaxWidth(colWidth*3);
+		notifications.setWrapText(true);
+		notifications.setEditable(false);
 		grid.add(notifications, 3, 3, 3, 4);
 
 		//Row Index 4
@@ -301,16 +320,22 @@ public class TrainController {
 		GridPane speedGrid = new GridPane();
 
 		Button incSpeed = new Button("+");
-		speedGrid.add(incSpeed, 0, 0);
+		HBox hIncSpeed = new HBox();
+		hIncSpeed.setAlignment(Pos.CENTER);
+		hIncSpeed.getChildren().add(incSpeed);
+		speedGrid.add(hIncSpeed, 0, 0);
 
 		Text speed = new Text("XX mph");
 		speed.setTextAlignment(TextAlignment.CENTER);
 		speedGrid.add(speed, 0, 1);
 
 		Button decSpeed = new Button("-");
-		speedGrid.add(decSpeed, 0, 2);
+		HBox hDecSpeed = new HBox();
+		hDecSpeed.setAlignment(Pos.CENTER);
+		hDecSpeed.getChildren().add(decSpeed);
+		speedGrid.add(hDecSpeed, 0, 2);
 		speedGrid.setMinWidth(colWidth*3);
-		speedGrid.setAlignment(Pos.CENTER_RIGHT);
+		speedGrid.setAlignment(Pos.CENTER);
 		grid.add(speedGrid, 5, 6, 3, 1);
 
 
@@ -355,6 +380,70 @@ public class TrainController {
 		movementStatus.setText("MOVEMENTSTATUS");
 		movementStatus.setTextAlignment(TextAlignment.CENTER);
 		grid.add(movementStatus, 3, 7, 2, 1);
+
+		Button makeAnnouncementBtn = new Button("Make Announcement");
+		HBox hMakeAnnouncementBtn = new HBox();
+		makeAnnouncementBtn.setTextAlignment(TextAlignment.CENTER);
+		hMakeAnnouncementBtn.setAlignment(Pos.CENTER_RIGHT);
+		hMakeAnnouncementBtn.setMinWidth(colWidth*2);
+		makeAnnouncementBtn.setMinWidth(colWidth*2);
+		hMakeAnnouncementBtn.getChildren().add(makeAnnouncementBtn);
+		grid.add(hMakeAnnouncementBtn, 5, 7, 3, 1);
+
+		// Row 8
+		Button testBtn = new Button("Test Train Controller");
+		HBox hTextBtn = new HBox();
+		testBtn.setTextAlignment(TextAlignment.CENTER);
+		hTextBtn.setAlignment(Pos.CENTER);
+		hTextBtn.setMinWidth(colWidth*2);
+		hTextBtn.getChildren().add(testBtn);
+		grid.add(hTextBtn, 3, 8, 2, 1);
+
+		Button powerControlBtn = new Button("Power Control");
+		HBox hPowerControlBtn = new HBox();
+		powerControlBtn.setTextAlignment(TextAlignment.CENTER);
+		hPowerControlBtn.setAlignment(Pos.CENTER_RIGHT);
+		hPowerControlBtn.setMinWidth(colWidth*2);
+		hPowerControlBtn.getChildren().add(powerControlBtn);
+		grid.add(hPowerControlBtn, 5, 8, 3, 1);
+
+
+		// Button Handlers
+		makeAnnouncementBtn.setOnAction((ActionEvent e) ->
+		{
+			try
+			{
+				AnnouncementWindow announcementWindow = new AnnouncementWindow(this);
+			} catch (Exception e1)
+			{
+				e1.printStackTrace();
+			}
+		});
+
+		testBtn.setOnAction((ActionEvent e) ->
+		{
+			try
+			{
+				TestingWindow testingWindow = new TestingWindow(this);
+			} catch (Exception e1)
+			{
+				e1.printStackTrace();
+			}
+		});
+
+		// Button Handlers
+		powerControlBtn.setOnAction((ActionEvent e) ->
+		{
+			try
+			{
+				PowerControlWindow powerControlWindow = new PowerControlWindow(this);
+			} catch (Exception e1)
+			{
+				e1.printStackTrace();
+			}
+		});
+
+
 
 		Scene scene = new Scene(grid, windowWidth, windowHight);
 		stage.setScene(scene);
