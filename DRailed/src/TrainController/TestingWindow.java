@@ -1,5 +1,6 @@
 package TrainController;
 
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -8,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 /**
@@ -24,11 +26,20 @@ public class TestingWindow {
 	//Class strings
 	private String windowTitle = "Testing Window";
 
+	private Text powerCommand;
+
+	private double previousError = 0;
+
+	private double previousUK = 0;
+
 	//Class integers
 	private int windowWidth = 300;
 	private int windowHight = 300;
 	private int inset = 25;
 	private int colWidth = 75;
+
+	private TextField actualSpeedField;
+	private TextField inputSpeedField;
 
 	public TestingWindow(TrainController tc)
 	{
@@ -41,13 +52,14 @@ public class TestingWindow {
 		grid.setPadding(new Insets(inset, inset, inset, inset));
 		grid.setVgap(inset);
 
-		TextField actualSpeedField = new TextField();
-		TextField inputSpeedField = new TextField();
+		actualSpeedField = new TextField();
+		inputSpeedField = new TextField();
 		Text actualLabel = new Text("Actual Speed (mi/hr): ");
 		Text inputLabel = new Text("Desired Speed (mi/hr): ");
 		Button okBtn = new Button("OK");
 		Button cancelBtn = new Button("CANCEL");
 
+		powerCommand = new Text("Power Command: ");
 
 		grid.add(actualLabel, 0, 0);
 
@@ -71,13 +83,49 @@ public class TestingWindow {
 		hCancelBtn.getChildren().add(cancelBtn);
 		grid.add(hCancelBtn, 1, 2);
 
+		powerCommand = new Text("Power Command: ");
+		powerCommand.setTextAlignment(TextAlignment.CENTER);
+		powerCommand.setWrappingWidth(colWidth*3);
+		grid.add(powerCommand, 0, 3, 2, 1);
+
 		Scene scene = new Scene(grid, windowWidth, windowHight);
 		stage.setScene(scene);
 		stage.show();
 
+		okBtn.setOnAction((ActionEvent e) ->
+		{
+			try
+			{
+				Simulate(trainController.getKP(), trainController.getKI());
+			} catch (Exception e1)
+			{
+				e1.printStackTrace();
+			}
+		});
 
+		cancelBtn.setOnAction((ActionEvent e) ->
+		{
+			try
+			{
+				stage.close();
+			} catch (Exception e1)
+			{
+				e1.printStackTrace();
+			}
+		});
+	}
 
-		//trainController.MakeAnnouncement("Test Announcement");
+	private void Simulate(double kp, double ki)
+	{
+		double desiredSpeed = Double.valueOf(inputSpeedField.getText());
+		double actualSpeed = Double.valueOf(actualSpeedField.getText());
+		double difference = Math.abs(desiredSpeed - actualSpeed);
+		double UK = difference + previousError + previousUK;
+		double command = (kp*difference) + (ki*UK);
+		powerCommand.setText("Power Command: " + command+ " W");
+
+		previousError = difference;
+		previousUK = UK;
 	}
 
 

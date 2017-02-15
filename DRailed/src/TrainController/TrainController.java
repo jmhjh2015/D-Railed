@@ -33,8 +33,8 @@ public class TrainController {
 	private int inset = 25;
 	private int colWidth = 75;
 
-	private double kp;
-	private double ki;
+	private double kp = 4;
+	private double ki = 5;
 
 	public void MakeAnnouncement(String announcement)
 	{
@@ -49,6 +49,22 @@ public class TrainController {
 		}
 
 		notifications.setText(newNotification + announcement + "\n");
+	}
+
+	public void setPowerVars(double kpIn, double kiIn)
+	{
+		kp = kpIn;
+		ki = kiIn;
+	}
+
+	public double getKP()
+	{
+		return kp;
+	}
+
+	public double getKI()
+	{
+		return ki;
 	}
 
 	public TrainController() throws IOException

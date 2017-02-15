@@ -1,5 +1,6 @@
 package TrainController;
 
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -52,11 +53,13 @@ public class PowerControlWindow {
 		grid.add(kpLabel, 0, 0);
 
 		kpField.setMinWidth(colWidth);
+		kpField.setText(String.valueOf(trainController.getKP()));
 		grid.add(kpField, 1, 0);
 
 		grid.add(kiLabel, 0, 1);
 
 		kiField.setMinWidth(colWidth);
+		kiField.setText(String.valueOf(trainController.getKI()));
 		grid.add(kiField, 1, 1);
 
 		HBox hOKBtn = new HBox();
@@ -75,10 +78,30 @@ public class PowerControlWindow {
 		stage.setScene(scene);
 		stage.show();
 
+		okBtn.setOnAction((ActionEvent e) ->
+		{
+			try
+			{
+				trainController.setPowerVars(Double.valueOf(kpField.getText()), Double.valueOf(kiField.getText()));
+				stage.close();
+			} catch (Exception e1)
+			{
+				e1.printStackTrace();
+			}
+		});
 
+		cancelBtn.setOnAction((ActionEvent e) ->
+		{
+			try
+			{
+				stage.close();
+			} catch (Exception e1)
+			{
+				e1.printStackTrace();
+			}
+		});
 
 		//trainController.MakeAnnouncement("Test Announcement");
 	}
-
 
 }
