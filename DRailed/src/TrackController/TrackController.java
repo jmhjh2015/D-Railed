@@ -1,6 +1,5 @@
 package TrackController;
 
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -12,13 +11,17 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
-
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import TrackController.Classes.PLC;
 
 /**
- * Created by aadu on 2/3/17.
+ * Created by Jonathan on 2/3/17.
  */
 public class TrackController {
     //Test
@@ -30,12 +33,19 @@ public class TrackController {
     private TextField blockID, openStatus, lightsStatus,crossStatus,stationStatus, switchAdj1, switchAdj2, switchIDText, mainBlockText, subBlock1Text, subBlock2Text, connectedText;
     private TextArea notifications;
     private Text controllerLine, controllerSection;
-    private Button murphyButton, userInputsButton, engInputsButton, toTrackModelButton, murphyBreakTrackButton, murphyBreakCTCComms, murphyBreakTMComms;
+    private Button murphyButton, userInputsButton, engInputsButton, toTrackModelButton, murphyBreakTrackButton, murphyBreakCTCComms, murphyBreakTMComms, sendEngineer, loadPLC;
     private RadioButton trainRB, blockRB, switchRB;
+    private PLC myPLC;
 
 
     public TrackController() throws IOException {
 
+       createUI();
+
+    }
+
+    public void createUI()
+    {
         //Set variables
         double windowWidth = 1250;
         double windowHeight = 500;
@@ -316,8 +326,10 @@ public class TrackController {
         TextField selectSwitchText = new TextField("");
         TextField setOpenText = new TextField("");
         TextField setSwitchText = new TextField("");
-        Button sendEngineer = new Button("Send Changes");
-        Button loadPLC = new Button("Upload PLC File");
+        sendEngineer = new Button("Send Changes");
+        loadPLC = new Button("Upload PLC File");
+        sendEngineer.setOnAction(e->EngineerButtonClicked(e));
+        loadPLC.setOnAction(e->EngineerButtonClicked(e));
 
 
         //setBlocklabel
@@ -430,13 +442,29 @@ public class TrackController {
         userInputs.add(getData,0,3,2,1);
         //End From CTC---------------------------------------------------------------------
 
-
         mainStage.setScene(mainScene);
         mainStage.show();
-
     }
 
-    public void MurphyButtonClicked(ActionEvent e) {
+    public void EngineerButtonClicked(ActionEvent e)
+    {
+        Object source = e.getSource();
+        if(source == loadPLC)
+        {
+            FileChooser fileChooser = new FileChooser();
+            Stage fileSelect = new Stage();
+            fileSelect.setTitle("Choose a PLC file to import:");
+            fileChooser.setInitialDirectory(new File("src/TrackController"));
+            File file = fileChooser.showOpenDialog(fileSelect);
+            if(file != null)
+            {
+                myPLC = new PLC(file);
+            }
+        }
+    }
+
+    public void MurphyButtonClicked(ActionEvent e)
+    {
         Object source = e.getSource();
         if(source == murphyBreakTrackButton)
         {

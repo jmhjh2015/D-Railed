@@ -1,0 +1,2 @@
+this.crossing = (this.occupied || this.broken) && this.switch
+this.lights = this.occupied
