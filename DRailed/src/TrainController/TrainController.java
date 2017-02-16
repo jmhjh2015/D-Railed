@@ -48,7 +48,7 @@ public class TrainController {
 			newNotification = notifications.getText();
 		}
 
-		notifications.setText(newNotification + announcement + "\n");
+		notifications.setText(newNotification + "ANN: " + announcement + "\n");
 	}
 
 	public void setPowerVars(double kpIn, double kiIn)
@@ -199,6 +199,7 @@ public class TrainController {
 		RadioButton acFail = new RadioButton("Fail");
 		acFail.setToggleGroup(acToggleGroup);
 		acFail.setSelected(false);
+		acFail.setDisable(true);
 		acFail.setMaxWidth(colWidth);
 		acFail.setMinWidth(colWidth);
 		acGrid.add(acFail, 0, 2);
@@ -207,7 +208,7 @@ public class TrainController {
 		grid.add(acGrid, 1, 3, 2, 1);
 
 		notifications = new TextArea ("Notifications here");
-		notifications.setMaxWidth(colWidth*3);
+		notifications.setMaxWidth(colWidth*3.5);
 		notifications.setWrapText(true);
 		notifications.setEditable(false);
 		grid.add(notifications, 3, 3, 3, 4);
@@ -241,6 +242,7 @@ public class TrainController {
 		RadioButton heatFail = new RadioButton("Fail");
 		heatFail.setToggleGroup(heatToggleGroup);
 		heatFail.setSelected(false);
+		heatFail.setDisable(true);
 		heatFail.setMaxWidth(colWidth);
 		heatFail.setMinWidth(colWidth);
 		heatGrid.add(heatFail, 0, 2);
@@ -290,6 +292,7 @@ public class TrainController {
 		RadioButton lightsFail = new RadioButton("Fail");
 		lightsFail.setToggleGroup(lightsToggleGroup);
 		lightsFail.setSelected(false);
+		lightsFail.setDisable(true);
 		lightsFail.setMaxWidth(colWidth);
 		lightsFail.setMinWidth(colWidth);
 		lightsGrid.add(lightsFail, 0, 2);
@@ -325,6 +328,7 @@ public class TrainController {
 
 		RadioButton lDoorFail = new RadioButton("Fail");
 		lDoorFail.setToggleGroup(lDoorToggleGroup);
+		lDoorFail.setDisable(true);
 		lDoorFail.setSelected(false);
 		lDoorFail.setMaxWidth(colWidth);
 		lDoorFail.setMinWidth(colWidth);
@@ -384,6 +388,7 @@ public class TrainController {
 		RadioButton rDoorFail = new RadioButton("Fail");
 		rDoorFail.setToggleGroup(rDoorToggleGroup);
 		rDoorFail.setSelected(false);
+		rDoorFail.setDisable(true);
 		rDoorFail.setMaxWidth(colWidth);
 		rDoorFail.setMinWidth(colWidth);
 		rDoorGrid.add(rDoorFail, 0, 2);
