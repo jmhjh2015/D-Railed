@@ -894,14 +894,24 @@ public class TrackModelGUI {
             blockLabel.setFont(Font.font(blockLineLabel.getFont().getFamily(), FontWeight.BOLD, blockLineLabel.getFont().getSize()));
             blockValue.setPadding(new Insets(0,0,20,10));
 
-        Label length = new Label("Length (m): ");
-        Label lengthValue = new Label("" + selectedBlock.getLength());
+        Label length = new Label("Length (mi): ");
+        Label lengthValue = null;
+        if(selectedBlock.getLength() != null) {
+            lengthValue = new Label("" + selectedBlock.getLength() * 0.0006);
+        }else{
+            lengthValue = new Label("" + selectedBlock.getLength());
+        }
             length.setPadding(new Insets(0,0,0,10));
             length.setFont(Font.font(blockLineLabel.getFont().getFamily(), FontWeight.BOLD, blockLineLabel.getFont().getSize()));
             lengthValue.setPadding(new Insets(0,0,0,10));
 
         Label speedLimit = new Label("Speed Limit (mph): ");
-        Label speedLimitValue = new Label("" + selectedBlock.getSpeedLimit());
+        Label speedLimitValue = null;
+        if(selectedBlock.getSpeedLimit() != null) {
+            speedLimitValue = new Label("" + Math.round(selectedBlock.getSpeedLimit() * 2.24)); // meters/seconds * miles/hour
+        }else{
+            speedLimitValue = new Label("" + selectedBlock.getSpeedLimit());
+        }
             speedLimit.setPadding(new Insets(0,0,0,10));
             speedLimit.setFont(Font.font(blockLineLabel.getFont().getFamily(), FontWeight.BOLD, blockLineLabel.getFont().getSize()));
             speedLimitValue.setPadding(new Insets(0,0,0,10));
@@ -913,19 +923,42 @@ public class TrackModelGUI {
             gradeValue.setPadding(new Insets(0,0,0,10));
 
         Label elevation = new Label("Elevation (m): ");
-        Label elevationValue = new Label("" + selectedBlock.getElevation());
+        Label elevationValue = null;
+        if(selectedBlock.getElevation() != null) {
+            elevationValue = new Label("" + selectedBlock.getElevation() * 3.28);
+        }else{
+            elevationValue = new Label("" + selectedBlock.getElevation());
+        }
             elevation.setPadding(new Insets(0,0,0,10));
             elevation.setFont(Font.font(blockLineLabel.getFont().getFamily(), FontWeight.BOLD, blockLineLabel.getFont().getSize()));
             elevationValue.setPadding(new Insets(0,0,0,10));
 
         Label cumElevation = new Label("Cumulative Elevation (m): ");
-        Label cumElevationValue = new Label("" + selectedBlock.getCumulativeElevation());
+        Label cumElevationValue = null;
+        if(selectedBlock.getCumulativeElevation() != null){
+            cumElevationValue = new Label("" + selectedBlock.getCumulativeElevation() * 3.28);
+        }else{
+            cumElevationValue = new Label("" + selectedBlock.getCumulativeElevation());
+        }
             cumElevation.setPadding(new Insets(0,0,0,10));
             cumElevation.setFont(Font.font(blockLineLabel.getFont().getFamily(), FontWeight.BOLD, blockLineLabel.getFont().getSize()));
             cumElevationValue.setPadding(new Insets(0,0,0,10));
 
         Label direction = new Label("Direction: ");
-        Label directionValue = new Label("" + selectedBlock.getDirection());
+        String dir = null;
+        if(selectedBlock.getDirection() == null){
+            dir = "BI";
+        }else if(selectedBlock.getDirection().equals("HEAD")){
+            dir = "HEAD";
+        }else if(selectedBlock.getDirection().equals("TAIL")){
+            dir = "TAIL";
+        }else if(selectedBlock.getDirection().equals("HEAD/TAIL")){
+            dir = "UNI";
+        }else if(selectedBlock.getDirection().equals("HEAD/HEAD")){
+            dir = "BI";
+        }
+
+        Label directionValue = new Label("" + dir);
             direction.setPadding(new Insets(0,0,0,10));
             direction.setFont(Font.font(blockLineLabel.getFont().getFamily(), FontWeight.BOLD, blockLineLabel.getFont().getSize()));
             directionValue.setPadding(new Insets(0,0,0,10));
