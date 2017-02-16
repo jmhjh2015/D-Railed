@@ -25,6 +25,8 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -472,6 +474,92 @@ public class TrackModelGUI {
             }
         });
 
+        Button infraSettings = new Button("Settings");
+        importTrack.setMinHeight(30);
+        importTrack.setMaxHeight(30);
+
+        infraSettings.setOnAction(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent e){
+                if(selectedBlock.getBlockNumber() == null){
+                    Alert alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Settings Error");
+                    alert.setHeaderText("No Block Selected");
+                    alert.setContentText("Please select a block to use this function!");
+                    alert.show();
+                    return;
+                }
+
+                Stage settings = new Stage();
+                GridPane settingsPanel = new GridPane();
+
+                VBox changeSettings = new VBox();
+                HBox confirm = new HBox();
+
+                Label todo = new Label("Select systems to simulate block infrastructure:");
+                todo.setPadding(new Insets(10));
+
+                CheckBox switchToggle = new CheckBox("Toggle Switch Position");
+                CheckBox crossingToggle = new CheckBox("Toggle Crossing State");
+                CheckBox stationToggle = new CheckBox("Generate New Station Departure Amount");
+                CheckBox lightToggle = new CheckBox("Toggle Light State");
+
+                Button okButton = new Button("OK");
+                okButton.setOnAction(new EventHandler<ActionEvent>(){
+                    public void handle(ActionEvent e){
+                        if(switchToggle.isSelected())
+                            selectedBlock.getSwitch().toggleState();
+
+                        if(crossingToggle.isSelected())
+                            selectedBlock.getCrossing().toggleActive();
+
+                        if(stationToggle.isSelected())
+                            selectedBlock.getStation().depart();
+
+                        if(lightToggle.isSelected())
+                            selectedBlock.getLight().toggleActive();
+
+                        updateBlockMonitor();
+                        settings.close();
+                    }
+                });
+
+                Button cancelButton = new Button("Cancel");
+                cancelButton.setOnAction(new EventHandler<ActionEvent>(){
+                    public void handle(ActionEvent e){
+                        settings.close();
+                    }
+                });
+
+                if(selectedBlock.getSwitch() != null)
+                    changeSettings.getChildren().add(switchToggle);
+
+                if(selectedBlock.getCrossing() != null)
+                    changeSettings.getChildren().add(crossingToggle);
+
+                if(selectedBlock.getStation() != null)
+                    changeSettings.getChildren().add(stationToggle);
+
+                if(selectedBlock.getLight() != null)
+                    changeSettings.getChildren().add(lightToggle);
+
+                changeSettings.setPadding(new Insets(10));
+
+                confirm.getChildren().addAll(okButton, cancelButton);
+                confirm.setPadding(new Insets(10));
+
+                settingsPanel.add(todo, 0, 0);
+                settingsPanel.add(changeSettings, 0, 1);
+                settingsPanel.add(confirm, 0, 3);
+
+                Scene murphyScene = new Scene(settingsPanel, 400, 500);
+                settings.setTitle("Infrastructure Settings");
+                settings.setScene(murphyScene);
+                settings.show();
+
+            }
+        });
+
+
         Button murphyCtrl = new Button("Murphy Controls");
         murphyCtrl.setMinHeight(30);
         murphyCtrl.setMaxHeight(30);
@@ -553,7 +641,7 @@ public class TrackModelGUI {
             }
         });
 
-        menu.getChildren().addAll(importTrack, murphyCtrl);
+        menu.getChildren().addAll(importTrack, infraSettings, murphyCtrl);
         return menu;
     }
 
@@ -897,7 +985,7 @@ public class TrackModelGUI {
         Label length = new Label("Length (mi): ");
         Label lengthValue = null;
         if(selectedBlock.getLength() != null) {
-            lengthValue = new Label("" + selectedBlock.getLength() * 0.0006);
+            lengthValue = new Label("" + round(selectedBlock.getLength() * 0.0006, 2));
         }else{
             lengthValue = new Label("" + selectedBlock.getLength());
         }
@@ -908,7 +996,7 @@ public class TrackModelGUI {
         Label speedLimit = new Label("Speed Limit (mph): ");
         Label speedLimitValue = null;
         if(selectedBlock.getSpeedLimit() != null) {
-            speedLimitValue = new Label("" + Math.round(selectedBlock.getSpeedLimit() * 2.24)); // meters/seconds * miles/hour
+            speedLimitValue = new Label("" + round(selectedBlock.getSpeedLimit() * 2.24, 2)); // meters/seconds * miles/hour
         }else{
             speedLimitValue = new Label("" + selectedBlock.getSpeedLimit());
         }
@@ -922,10 +1010,10 @@ public class TrackModelGUI {
             grade.setFont(Font.font(blockLineLabel.getFont().getFamily(), FontWeight.BOLD, blockLineLabel.getFont().getSize()));
             gradeValue.setPadding(new Insets(0,0,0,10));
 
-        Label elevation = new Label("Elevation (m): ");
+        Label elevation = new Label("Elevation (ft): ");
         Label elevationValue = null;
         if(selectedBlock.getElevation() != null) {
-            elevationValue = new Label("" + selectedBlock.getElevation() * 3.28);
+            elevationValue = new Label("" + round(selectedBlock.getElevation() * 3.28, 2));
         }else{
             elevationValue = new Label("" + selectedBlock.getElevation());
         }
@@ -933,10 +1021,10 @@ public class TrackModelGUI {
             elevation.setFont(Font.font(blockLineLabel.getFont().getFamily(), FontWeight.BOLD, blockLineLabel.getFont().getSize()));
             elevationValue.setPadding(new Insets(0,0,0,10));
 
-        Label cumElevation = new Label("Cumulative Elevation (m): ");
+        Label cumElevation = new Label("Cumulative Elevation (ft): ");
         Label cumElevationValue = null;
         if(selectedBlock.getCumulativeElevation() != null){
-            cumElevationValue = new Label("" + selectedBlock.getCumulativeElevation() * 3.28);
+            cumElevationValue = new Label("" + round(selectedBlock.getCumulativeElevation() * 3.28,2));
         }else{
             cumElevationValue = new Label("" + selectedBlock.getCumulativeElevation());
         }
@@ -998,6 +1086,14 @@ public class TrackModelGUI {
         blockInfoPanel.add(temperatureValue, 1, 10);
 
         return blockInfoPanel;
+    }
+
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
 }
