@@ -33,8 +33,21 @@ public class TrainController {
 	private int inset = 25;
 	private int colWidth = 75;
 
-	private double kp = 4;
-	private double ki = 5;
+	private double kp = 1;
+	private double ki = 1;
+
+	private Text speedText;
+	private Text powerText;
+
+	public void SetPowerText(String in)
+	{
+		powerText.setText(in + " W");
+	}
+
+	public void SetSpeedText(String in)
+	{
+		powerText.setText(in + " mph");
+	}
 
 	public void MakeAnnouncement(String announcement)
 	{
@@ -97,8 +110,8 @@ public class TrainController {
 		speedLabel.setAlignment(Pos.CENTER_RIGHT);
 		grid.add(speedLabel, 3, 0);
 
-		Text speedText = new Text();
-		speedText.setText("TEMPSPEED");
+		speedText = new Text();
+		speedText.setText("0 mph");
 		speedText.setWrappingWidth(colWidth*1.5);
 		speedText.setTextAlignment(TextAlignment.LEFT);
 		grid.add(speedText, 4, 0);
@@ -131,8 +144,8 @@ public class TrainController {
 		powerLabel.setAlignment(Pos.CENTER_RIGHT);
 		grid.add(powerLabel, 3, 1);
 
-		Text powerText = new Text();
-		powerText.setText("TEMPOWER");
+		powerText = new Text();
+		powerText.setText("0 W");
 		powerText.setWrappingWidth(colWidth*1.5);
 		powerText.setTextAlignment(TextAlignment.LEFT);
 		grid.add(powerText, 4, 1);

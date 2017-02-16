@@ -119,10 +119,12 @@ public class TestingWindow {
 	{
 		double desiredSpeed = Double.valueOf(inputSpeedField.getText());
 		double actualSpeed = Double.valueOf(actualSpeedField.getText());
-		double difference = Math.abs(desiredSpeed - actualSpeed);
-		double UK = difference + previousError + previousUK;
+		double difference = desiredSpeed - actualSpeed;
+		double UK = previousUK + (.5)*(difference+previousError);
 		double command = (kp*difference) + (ki*UK);
-		powerCommand.setText("Power Command: " + command+ " W");
+		powerCommand.setText("Power Command: " + command + " W");
+		trainController.SetPowerText(String.valueOf(command));
+		trainController.SetSpeedText(String.valueOf(actualSpeed));
 
 		previousError = difference;
 		previousUK = UK;
