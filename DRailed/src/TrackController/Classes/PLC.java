@@ -17,9 +17,16 @@ public class PLC
         boolean isGood;
         String input, output;
         String[] inOut, afterParenths;
+        boolean occupied, switches, lights, broken;
+
         public PLC(File file)
         {
             isGood = true;
+            occupied = true;
+            switches = false;
+            lights = false;
+            broken = false;
+
             try(BufferedReader br = new BufferedReader(new FileReader(file)))
             {
                 for(String line; (line = br.readLine()) != null; )
@@ -46,7 +53,7 @@ public class PLC
 
                                 ScriptEngineManager sem = new ScriptEngineManager();
                                 ScriptEngine se = sem.getEngineByName("JavaScript");
-                                String myExpression = "('abc' == 'xyz' && 'thy' == 'thy') || ('ujy' == 'ujy')";
+                                String myExpression = input;
                                 System.out.println(se.eval(myExpression));
 
                             } catch (ScriptException e) {
